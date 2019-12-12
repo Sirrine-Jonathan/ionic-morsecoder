@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<head>
+	<style>
+		#button {
+			width: 100px;
+			height: 100px;
+			margin: 50px;
+			background-color: blue;
+		}
+
+			#button2 {
+			width: 100px;
+			height: 100px;
+			margin: 50px;
+			background-color: red;
+		}
+	</style>
+</head>
+<body>
+<canvas id="button">
+
+</canvas>
+<script>
+
+  let context = new AudioContext();
+  let osc = context.createOscillator();
+  let gainNode = context.createGain(); 
+
+
+  function startOsc(frequency){
+  	context = new AudioContext();
+    osc = context.createOscillator(); 
+    osc.type = 'sine';
+    osc.frequency.value = frequency;
+    gainNode = context.createGain();
+    osc.connect(gainNode);
+    gainNode.connect(context.destination);
+    osc.start();
+  }
+
+  function end(){
+  	//console.log(gainNode.gain);
+  	//osc.stop();
+  	gainNode.gain.setTargetAtTime(0, context.currentTime, 0.015);
+  }
+
+  document.getElementById('button').addEventListener('touchstart',function (){
+  	startOsc(440);
+  })
+
+  document.getElementById('button').addEventListener('touchend',function (){
+  	end();
+  })
+
+  window.onClick = startOsc;
+</script>
+</body>
+</html
