@@ -7,7 +7,8 @@ import { AppPage } from './declarations';
 import Menu from './components/Menu';
 import Home from './pages/Home';
 import List from './pages/List';
-import { home, list } from 'ionicons/icons';
+import Settings from './pages/Settings';
+import { home, list, settings } from 'ionicons/icons';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -38,6 +39,11 @@ const appPages: AppPage[] = [
     title: 'List',
     url: '/home/list',
     icon: list
+  },
+  {
+    title: 'Settings',
+    url: '/home/settings',
+    icon: settings
   }
 ];
 
@@ -49,6 +55,7 @@ const App: React.FC = () => (
         <IonRouterOutlet id="main">
           <Route path="/home" component={Home} exact={true} />
           <Route path="/home/list" component={List} exact={true} />
+          <Route path="/home/settings" component={Settings} exact={true} />
           <Route path="/" render={() => <Redirect to="/home"/> } exact={true} />
         </IonRouterOutlet>
       </IonSplitPane>

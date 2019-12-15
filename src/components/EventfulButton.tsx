@@ -19,9 +19,10 @@ const EventfulButton: React.FC<EventfulButtonProps> = ({ onPress, onRelease, chi
     let ctx = new AudioContext();
     let osc = ctx.createOscillator();
     osc.type = "sine";
-    osc.frequency.value = frequency;
+    osc.frequency.setValueAtTime(340, ctx.currentTime);
     let gain = ctx.createGain();
     osc.connect(gain);
+   
     gain.connect(ctx.destination);
     osc.start();
     setContext(ctx);

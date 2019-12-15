@@ -8,7 +8,7 @@ import {
   IonTitle,
   IonToolbar,
   IonIcon
-  } from '@ionic/react';
+} from '@ionic/react';
 import EventfulButton from '../components/EventfulButton';
 import TimingTool from '../components/TimingTool';
 import TextInput from '../components/TextInput';

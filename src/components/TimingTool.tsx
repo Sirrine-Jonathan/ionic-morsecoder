@@ -1,7 +1,7 @@
 import {
   IonProgressBar
 } from '@ionic/react';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 interface TimingToolProps {
   percent: number,
@@ -14,30 +14,30 @@ const SharedStyle = {
 
 const TimingTool: React.FunctionComponent<TimingToolProps> = ({ percent, buttonPressed }) => {
 
-  const [laststamp, setLaststamp] = useState()
   const [time, setTime] = useState(0);
+  const requestRef = useRef(0);
+  const previousTimeRef = useRef(0);
 
   let soundPercent = (buttonPressed) ? percent:0;
   let silentPercent = (buttonPressed) ? 0:percent;
 
   function keepTime(timestamp: number){
-    if (laststamp == undefined){
-      setLaststamp(timestamp);
+    if (previousTimeRef.current != undefined){
+      const deltaTime = timestamp - previousTimeRef.current;
+      setTime(prevCount => (prevCount + deltaTime * 0.01));
     }
-    let time = timestamp - laststamp;
-    setTime(time);
-    //console.log(`timestamp: ${timestamp}`);
-    //console.log(`laststamp: ${laststamp}`);
-    //console.log(`time: ${time}`);
-    //window.requestAnimationFrame(keepTime);
+    previousTimeRef.current = timestamp;
+    requestRef.current = requestAnimationFrame(keepTime);
   }
 
   useEffect(() => {
-    keepTime(0);
-  })
+    requestRef.current = requestAnimationFrame(keepTime);
+    return () => cancelAnimationFrame(requestRef.current);
+  }, []);
 
   return (
     <>
+      <div>{ Math.floor(time) }</div>
       <IonProgressBar style={SharedStyle} value={soundPercent}></IonProgressBar>
       <IonProgressBar style={SharedStyle} value={silentPercent}></IonProgressBar>
     </>
