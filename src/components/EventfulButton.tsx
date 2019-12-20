@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './EventfulButton.css';
+import './EventfulButton.scss';
 
 type EventCallback = () => any;
 
@@ -20,14 +20,15 @@ const EventfulButton: React.FC<EventfulButtonProps> = ({ onPress, onRelease, chi
     let osc = ctx.createOscillator();
     osc.type = "sine";
     osc.frequency.setValueAtTime(340, ctx.currentTime);
-    let gain = ctx.createGain();
-    osc.connect(gain);
+    let Gain = ctx.createGain();
+    Gain.gain.setValueAtTime(0.5, ctx.currentTime);
+    osc.connect(Gain);
    
-    gain.connect(ctx.destination);
+    Gain.connect(ctx.destination);
     osc.start();
     setContext(ctx);
     setOscillator(osc);
-    setGainNode(gain);
+    setGainNode(Gain);
   };
 
   function off() {

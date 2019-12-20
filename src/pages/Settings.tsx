@@ -1,7 +1,9 @@
-import { IonButtons, IonContent, IonHeader, IonIcon, IonItem, IonList, IonMenuButton, IonPage, IonTitle, IonToolbar, IonRange, IonLabel, IonItemDivider, IonButton, IonToggle } from '@ionic/react';
+import { IonButtons, IonContent, IonHeader, IonIcon, IonItem, IonList, IonMenuButton, IonPage, IonTitle, IonToolbar, IonRange, IonLabel, IonItemDivider, IonButton, IonToggle, IonInput } from '@ionic/react';
 import { play, square } from 'ionicons/icons';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Row from '../components/Row';
+import { getItem, setItem } from '../util/storage';
+import { DARK_THEME } from '../constants';
 
 const SettingsPage: React.FC = () => {
     const [frequency, setFrequency] = useState(440);
@@ -10,9 +12,9 @@ const SettingsPage: React.FC = () => {
     const [gainNode, setGainNode] = useState();
     const [rangeClass, setRangeClass] = useState('');
     const [isPlaying, setIsPlaying] = useState(false);
+    const [isDarkTheme, setIsDarkTheme] = useState(false);
   
     function startOsc(){ 
-      console.log("on");
       if(!isPlaying){
         let ctx = new AudioContext();
         let osc = ctx.createOscillator();
@@ -32,7 +34,6 @@ const SettingsPage: React.FC = () => {
     };
   
     function off() {
-      console.log("off");
       if (isPlaying){
         gainNode.gain.setTargetAtTime(0, context.currentTime, 0.015);
         setIsPlaying(false);
@@ -48,8 +49,39 @@ const SettingsPage: React.FC = () => {
     }
 
     function changeTheme(e: any){
-      console.log(e);
+      let themeDark = 'false';
+      console.log('dark toggle checked: ', e.target.checked);
+      if (e.target.checked){
+        themeDark = 'true';
+      }
+      console.log('dark theme: ', themeDark);
+      setItem(DARK_THEME, themeDark);
+      setIsDarkTheme(e.target.checked);
+      getTheme();
     }
+
+    async function getTheme(){
+      let theme = await getItem(DARK_THEME);
+      console.log('from getTheme: ', theme);
+      if (theme === undefined || theme === null){
+        return theme;
+      } else {
+        return null;
+      }
+    }
+
+    useEffect(() => {
+      getTheme().then((data) => {
+        console.log('use effect', data)
+        if (data === 'true'){
+          setIsDarkTheme(true);
+        } else {
+          setIsDarkTheme(false);
+        }
+      })
+    }, []);
+
+    
     
     function changeSound(e: any){
       console.log(e);
@@ -78,8 +110,8 @@ const SettingsPage: React.FC = () => {
         </IonLabel>
       </IonItemDivider>
         <IonItem>
-          <IonLabel>Light Theme</IonLabel>
-          <IonToggle value="theme" onChange={changeTheme} />
+          <IonLabel>Dark Theme</IonLabel>
+          <IonToggle value="theme" checked={isDarkTheme} onClick={changeTheme} />
         </IonItem>
       <IonItemDivider>
         <IonLabel>
@@ -88,11 +120,11 @@ const SettingsPage: React.FC = () => {
       </IonItemDivider>
         <IonItem>
           <IonLabel>Vibrate</IonLabel>
-          <IonToggle onChange={changeVibrate} />
+          <IonToggle onClick={changeVibrate} />
         </IonItem>
         <IonItem>
           <IonLabel>Tone</IonLabel>
-          <IonToggle onChange={changeSound} />
+          <IonToggle onClick={changeSound} />
         </IonItem>
         <div style={{ 
           display: 'flex', 
@@ -104,10 +136,9 @@ const SettingsPage: React.FC = () => {
             min={250} 
             max={550} 
             defaultValue={440}
-            value={440}
+            value={frequency}
             pin={true} 
-            onClick={changeFrequency}
-            onBlur={changeFrequency}
+            onChange={changeFrequency}
             className={rangeClass}
         >
           <IonLabel slot="start">250 Hz</IonLabel>
@@ -121,6 +152,30 @@ const SettingsPage: React.FC = () => {
         >
           <IonIcon icon={(isPlaying) ? square:play}></IonIcon>
         </IonButton>
+        </div>
+        <IonItemDivider>
+          <IonLabel>
+            Timing
+          </IonLabel>
+        </IonItemDivider>
+        <IonItem>
+          <IonLabel>
+            Use Timing Tool
+          </IonLabel>
+          <IonToggle onClick={(e) => {console.log('Use Timing Tool Toggle', e)}} />
+        </IonItem>
+        <div style={{ 
+          display: 'flex', 
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center'
+        }}>
+            <IonLabel>
+              WPM
+            </IonLabel>
+            <IonInput type="number" value="20" onChange={(e) => {console.log('wpm changed', e)}}>
+              
+            </IonInput>
         </div>
       </IonContent>
     </IonPage>

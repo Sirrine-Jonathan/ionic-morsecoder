@@ -1,14 +1,16 @@
 import React from 'react';
 
 interface RowProps {
-    justify?: string
+    justify?: string,
+    align?: string
 }
 
-const Row: React.FC<RowProps> = ({ justify, children }) => {
+const Row: React.FC<RowProps> = ({ justify, align, children }) => {
 
     const style = {
         display: 'flex',
-        justifyContent: justify
+        justifyContent: justify,
+        alignItems: align
     }
 
     return (
