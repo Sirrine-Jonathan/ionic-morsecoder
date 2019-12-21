@@ -34,6 +34,7 @@ const TimingTool: React.FunctionComponent<TimingToolProps> = ({ baseUnit, button
   const requestRef = useRef(0);
   const previousTimeRef = useRef(0);
   const previousButtonState = useRef(buttonPressed);
+  const started = useRef(false);
 
   let soundPercent = (buttonPressed) ? getPercent(6):0;
   let silentPercent = (buttonPressed) ? 0:getPercent(14);
@@ -55,12 +56,16 @@ const TimingTool: React.FunctionComponent<TimingToolProps> = ({ baseUnit, button
       let symbol = emitSymbol();
       onInputEnd(symbol);
     }
+    console.log(time);
     requestRef.current = requestAnimationFrame(keepTime);
   }
 
   useEffect(() => {
-    requestRef.current = requestAnimationFrame(keepTime);
-    return () => cancelAnimationFrame(requestRef.current);
+    if (started.current || buttonPressed){
+      started.current = true;
+      requestRef.current = requestAnimationFrame(keepTime);
+      return () => cancelAnimationFrame(requestRef.current);
+    }
   }, [keepTime]);
 
   useEffect(() => {
@@ -113,13 +118,10 @@ const TimingTool: React.FunctionComponent<TimingToolProps> = ({ baseUnit, button
       } 
     } else {
       if (getPercent(2) < 1){
-        console.log('no space');
         return '';
       } else if (getPercent(6) < 1) {
-        console.log('letter space');
         return ' ';
       } else {
-        console.log('word space');
         return '   ';
       }
     }
