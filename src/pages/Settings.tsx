@@ -1,9 +1,9 @@
 import { IonButtons, IonContent, IonHeader, IonIcon, IonItem, IonList, IonMenuButton, IonPage, IonTitle, IonToolbar, IonRange, IonLabel, IonItemDivider, IonButton, IonToggle, IonInput } from '@ionic/react';
 import { play, square } from 'ionicons/icons';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Row from '../components/Row';
 import { getItem, setItem } from '../util/storage';
-import { DARK_THEME } from '../constants';
+import { DARK_THEME, FREQUENCY } from '../constants';
 
 const SettingsPage: React.FC = () => {
     const [frequency, setFrequency] = useState(440);
@@ -13,6 +13,9 @@ const SettingsPage: React.FC = () => {
     const [rangeClass, setRangeClass] = useState('');
     const [isPlaying, setIsPlaying] = useState(false);
     const [isDarkTheme, setIsDarkTheme] = useState(false);
+
+    const min = useRef(200);
+    const max = useRef(1000);
   
     function startOsc(){ 
       if(!isPlaying){
@@ -37,12 +40,15 @@ const SettingsPage: React.FC = () => {
       if (isPlaying){
         gainNode.gain.setTargetAtTime(0, context.currentTime, 0.015);
         setIsPlaying(false);
+        setItem(FREQUENCY, frequency.toString());
+        getItem(FREQUENCY).then((data) => {
+          console.log("Just set frequency to: ", data);
+        });
       }
     }
 
     function changeFrequency(e: any){
       setFrequency(e.target.value);
-      console.log(frequency);
       if (oscillator){
         oscillator.frequency.setValueAtTime(frequency, context.currentTime);
       }
@@ -79,6 +85,15 @@ const SettingsPage: React.FC = () => {
           setIsDarkTheme(false);
         }
       })
+
+      getItem(FREQUENCY).then((data) => {
+        if (data){
+          let num = parseInt(data);
+          if (!isNaN(num)){
+            setFrequency(num);
+          }
+        }
+      })
     }, []);
 
     
@@ -111,7 +126,7 @@ const SettingsPage: React.FC = () => {
       </IonItemDivider>
         <IonItem>
           <IonLabel>Dark Theme</IonLabel>
-          <IonToggle value="theme" checked={isDarkTheme} onClick={changeTheme} />
+          <IonToggle value="theme" checked={isDarkTheme} onIonChange={changeTheme} />
         </IonItem>
       <IonItemDivider>
         <IonLabel>
@@ -120,11 +135,11 @@ const SettingsPage: React.FC = () => {
       </IonItemDivider>
         <IonItem>
           <IonLabel>Vibrate</IonLabel>
-          <IonToggle onClick={changeVibrate} />
+          <IonToggle onIonChange={changeVibrate} />
         </IonItem>
         <IonItem>
           <IonLabel>Tone</IonLabel>
-          <IonToggle onClick={changeSound} />
+          <IonToggle onIonChange={changeSound} />
         </IonItem>
         <div style={{ 
           display: 'flex', 
@@ -133,16 +148,16 @@ const SettingsPage: React.FC = () => {
           alignItems: 'center'
         }}>
         <IonRange 
-            min={250} 
-            max={550} 
+            min={min.current} 
+            max={max.current} 
             defaultValue={440}
             value={frequency}
             pin={true} 
-            onChange={changeFrequency}
+            onIonChange={changeFrequency}
             className={rangeClass}
         >
-          <IonLabel slot="start">250 Hz</IonLabel>
-          <IonLabel slot="end">550 Hz</IonLabel>
+          <IonLabel slot="start">{ min.current } Hz</IonLabel>
+          <IonLabel slot="end">{ max.current } Hz</IonLabel>
         </IonRange>
         <IonButton 
           fill="outline" 

@@ -56,7 +56,6 @@ const TimingTool: React.FunctionComponent<TimingToolProps> = ({ baseUnit, button
       let symbol = emitSymbol();
       onInputEnd(symbol);
     }
-    console.log(time);
     requestRef.current = requestAnimationFrame(keepTime);
   }
 

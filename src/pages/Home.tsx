@@ -87,7 +87,7 @@ const HomePage: React.FC = () => {
           { 
             ((currentMorse == "") ? 
             null:
-            (<IonIcon icon={close} size="large" onClick={eraseText}></IonIcon>)) 
+            (<IonIcon icon={close} style={{ fontSize: '35px'}}  onClick={eraseText}></IonIcon>)) 
           }
         </Row>
         <TimingTool 
