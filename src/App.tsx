@@ -28,6 +28,7 @@ import '@ionic/react/css/display.css';
 
 /* Theme variables */
 import './theme/variables.css';
+import { AppContextProvider } from './State';
 
 setupConfig({
   rippleEffect: false,
@@ -53,6 +54,7 @@ const appPages: AppPage[] = [
 ];
 
 const App: React.FC = () => (
+  <AppContextProvider>
   <IonApp>
     <IonReactRouter>
       <IonSplitPane contentId="main">
@@ -66,6 +68,7 @@ const App: React.FC = () => (
       </IonSplitPane>
     </IonReactRouter>
   </IonApp>
+  </AppContextProvider>
 );
 
 export default App;

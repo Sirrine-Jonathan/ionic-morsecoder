@@ -1,18 +1,17 @@
 import { IonButtons, IonContent, IonHeader, IonIcon, IonItem, IonList, IonMenuButton, IonPage, IonTitle, IonToolbar, IonRange, IonLabel, IonItemDivider, IonButton, IonToggle, IonInput } from '@ionic/react';
 import { play, square } from 'ionicons/icons';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import Row from '../components/Row';
-import { getItem, setItem } from '../util/storage';
-import { DARK_THEME, FREQUENCY } from '../constants';
+import { AppContext } from '../State';
 
 const SettingsPage: React.FC = () => {
-    const [frequency, setFrequency] = useState(440);
     const [context, setContext] = useState();
     const [oscillator, setOscillator] = useState();
     const [gainNode, setGainNode] = useState();
     const [rangeClass, setRangeClass] = useState('');
     const [isPlaying, setIsPlaying] = useState(false);
-    const [isDarkTheme, setIsDarkTheme] = useState(false);
+
+    const { state, dispatch } = useContext(AppContext);
 
     const min = useRef(200);
     const max = useRef(1000);
@@ -22,7 +21,7 @@ const SettingsPage: React.FC = () => {
         let ctx = new AudioContext();
         let osc = ctx.createOscillator();
         osc.type = "sine";
-        osc.frequency.setValueAtTime(frequency, ctx.currentTime);
+        osc.frequency.setValueAtTime(state.frequency, ctx.currentTime);
         let gain = ctx.createGain();
         gain.gain.setTargetAtTime(0.2, ctx.currentTime, 0.15);
         osc.connect(gain);
@@ -40,17 +39,13 @@ const SettingsPage: React.FC = () => {
       if (isPlaying){
         gainNode.gain.setTargetAtTime(0, context.currentTime, 0.015);
         setIsPlaying(false);
-        setItem(FREQUENCY, frequency.toString());
-        getItem(FREQUENCY).then((data) => {
-          console.log("Just set frequency to: ", data);
-        });
       }
     }
 
     function changeFrequency(e: any){
-      setFrequency(e.target.value);
+      dispatch({ type: "setFrequency", payload: e.target.value });
       if (oscillator){
-        oscillator.frequency.setValueAtTime(frequency, context.currentTime);
+        oscillator.frequency.setValueAtTime(e.target.value, context.currentTime);
       }
     }
 
@@ -61,42 +56,7 @@ const SettingsPage: React.FC = () => {
         themeDark = 'true';
       }
       console.log('dark theme: ', themeDark);
-      setItem(DARK_THEME, themeDark);
-      setIsDarkTheme(e.target.checked);
-      getTheme();
     }
-
-    async function getTheme(){
-      let theme = await getItem(DARK_THEME);
-      console.log('from getTheme: ', theme);
-      if (theme === undefined || theme === null){
-        return theme;
-      } else {
-        return null;
-      }
-    }
-
-    useEffect(() => {
-      getTheme().then((data) => {
-        console.log('use effect', data)
-        if (data === 'true'){
-          setIsDarkTheme(true);
-        } else {
-          setIsDarkTheme(false);
-        }
-      })
-
-      getItem(FREQUENCY).then((data) => {
-        if (data){
-          let num = parseInt(data);
-          if (!isNaN(num)){
-            setFrequency(num);
-          }
-        }
-      })
-    }, []);
-
-    
     
     function changeSound(e: any){
       console.log(e);
@@ -106,6 +66,10 @@ const SettingsPage: React.FC = () => {
     function changeVibrate(e: any){
       console.log(e);
     }
+
+    useEffect(() => {
+      console.log('useEffect Settings', state);
+    }, [state])
 
   return (
     <IonPage>
@@ -126,7 +90,7 @@ const SettingsPage: React.FC = () => {
       </IonItemDivider>
         <IonItem>
           <IonLabel>Dark Theme</IonLabel>
-          <IonToggle value="theme" checked={isDarkTheme} onIonChange={changeTheme} />
+          <IonToggle value="theme" onIonChange={changeTheme} />
         </IonItem>
       <IonItemDivider>
         <IonLabel>
@@ -150,8 +114,8 @@ const SettingsPage: React.FC = () => {
         <IonRange 
             min={min.current} 
             max={max.current} 
-            defaultValue={440}
-            value={frequency}
+            defaultValue={state.frequency}
+            value={state.frequency}
             pin={true} 
             onIonChange={changeFrequency}
             className={rangeClass}

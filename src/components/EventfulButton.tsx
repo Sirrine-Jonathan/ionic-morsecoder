@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import { getItem } from '../util/storage';
 import './EventfulButton.scss';
+import { AppContext } from '../State';
 
 type EventCallback = () => any;
 
@@ -15,11 +17,13 @@ const EventfulButton: React.FC<EventfulButtonProps> = ({ onPress, onRelease, chi
   const [oscillator, setOscillator] = useState();
   const [gainNode, setGainNode] = useState();
 
+  const { state, dispatch } = useContext(AppContext);
+
   function startOsc(frequency: number){ 
     let ctx = new AudioContext();
     let osc = ctx.createOscillator();
     osc.type = "sine";
-    osc.frequency.setValueAtTime(340, ctx.currentTime);
+    osc.frequency.setValueAtTime(state.frequency, ctx.currentTime);
     let Gain = ctx.createGain();
     Gain.gain.setValueAtTime(0.5, ctx.currentTime);
     osc.connect(Gain);
