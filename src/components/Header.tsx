@@ -1,8 +1,20 @@
-import { IonHeader, IonToolbar, IonButtons, IonMenuButton, IonTitle } from "@ionic/react";
+import { IonHeader, IonToolbar, IonButtons, IonMenuButton, IonTitle, IonIcon, IonRouterLink } from "@ionic/react";
 import React from "react";
 import './Header.scss';
+import { settings } from "ionicons/icons";
 
-const Header: React.FC = () => {
+interface HeaderProps {
+    title: string,
+    showSettings?: boolean
+}
+
+const settingsIconStyle = {
+    fontSize: '27px',
+    paddingRight: '12px',
+    color: 'rgba(0,0,0,0.50)'
+}
+
+const Header: React.FC<HeaderProps> = ({ title, showSettings = false }) => {
     return (
         <IonHeader>
             <IonToolbar>
@@ -10,9 +22,19 @@ const Header: React.FC = () => {
                     slot="start"
                     className="buttonContainer"
                 >
-                <IonMenuButton />
+                    <IonMenuButton />
                 </IonButtons>
-                <IonTitle className="title">mo.-.se code.-.</IonTitle>
+                <IonTitle className="title">{ title }</IonTitle>
+                { (showSettings) 
+                    ? 
+                    (
+                        <IonRouterLink slot="end" href="/home/settings">
+                            <IonIcon icon={settings} style={settingsIconStyle}></IonIcon>
+                        </IonRouterLink>
+                    )
+                    :
+                    null 
+                }
             </IonToolbar>
         </IonHeader>
     )

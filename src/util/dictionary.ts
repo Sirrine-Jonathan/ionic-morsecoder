@@ -46,9 +46,12 @@ function getValueFromKey(object: LookupTable, morse: string){
     return Object.keys(object).find(key => object[key] === morse) || "";
 }
 
-/* FROM english to morse */
-function translate(str: string){
-    let strArr = str.split('');
+function getKeyArray(){
+    return Object.keys(Table);
+}
+
+function translate(english: string){
+    let strArr = english.split('');
     let morseArr: string[] = [];
     strArr.forEach((each) => {
         morseArr.push(Table[each.toLowerCase()]);
@@ -56,11 +59,11 @@ function translate(str: string){
     return morseArr.join(' ');
 }
 
-/* FROM morse to english */
-function interpret(str: string){
+function interpret(morse: string){
+    console.log('morse', morse);
     let englishArr: string[] = [];
     const regex = /\s\s\s/g;
-    let wordArr = str.split(regex);
+    let wordArr = morse.split(regex);
     wordArr.forEach((word) => {
         let letterArr = word.split(' ');
         let englishLetterArr: string[] = [];
@@ -78,5 +81,6 @@ function interpret(str: string){
 export default {
     Table,
     interpret,
-    translate
+    translate,
+    getKeyArray
 }

@@ -2,6 +2,11 @@ import React, { useState, useContext } from 'react';
 import { getItem } from '../util/storage';
 import './EventfulButton.scss';
 import { AppContext } from '../State';
+import {
+  Plugins,
+  HapticsImpactStyle
+} from '@capacitor/core';
+const { Haptics } = Plugins;
 
 type EventCallback = () => any;
 
@@ -22,7 +27,7 @@ const EventfulButton: React.FC<EventfulButtonProps> = ({ onPress, onRelease, chi
   function startOsc(frequency: number){ 
     let ctx = new AudioContext();
     let osc = ctx.createOscillator();
-    osc.type = "sine";
+    osc.type = osc.type = state.toneType as OscillatorType;
     osc.frequency.setValueAtTime(state.frequency, ctx.currentTime);
     let Gain = ctx.createGain();
     Gain.gain.setValueAtTime(0.5, ctx.currentTime);
@@ -33,10 +38,13 @@ const EventfulButton: React.FC<EventfulButtonProps> = ({ onPress, onRelease, chi
     setContext(ctx);
     setOscillator(osc);
     setGainNode(Gain);
+
+    Haptics.selectionStart();
   };
 
   function off() {
      gainNode.gain.setTargetAtTime(0, context.currentTime, 0.015);
+     Haptics.selectionEnd();
   }
 
   let classname = "";

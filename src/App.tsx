@@ -6,7 +6,7 @@ import { AppPage } from './declarations';
 
 import Menu from './components/Menu';
 import Home from './pages/Home';
-import List from './pages/List';
+import Study from './pages/Study';
 import Settings from './pages/Settings';
 import { home, list, settings } from 'ionicons/icons';
 
@@ -42,8 +42,8 @@ const appPages: AppPage[] = [
     icon: home
   },
   {
-    title: 'List',
-    url: '/home/list',
+    title: 'Study',
+    url: '/home/study',
     icon: list
   },
   {
@@ -61,7 +61,7 @@ const App: React.FC = () => (
         <Menu appPages={appPages} />
         <IonRouterOutlet id="main">
           <Route path="/home" component={Home} exact={true} />
-          <Route path="/home/list" component={List} exact={true} />
+          <Route path="/home/study" component={Study} exact={true} />
           <Route path="/home/settings" component={Settings} exact={true} />
           <Route path="/" render={() => <Redirect to="/home"/> } exact={true} />
         </IonRouterOutlet>

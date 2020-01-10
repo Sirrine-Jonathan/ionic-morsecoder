@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import {
   IonButtons,
   IonContent,
@@ -20,16 +20,17 @@ import { close, play, square } from 'ionicons/icons';
 import Dictionary from '../util/dictionary';
 import './Home.css';
 import Row from '../components/Row';
+import { AppContext } from '../State';
 
 const HomePage: React.FC = () => {
 
   const [isPushed, setIsPushed] = useState(false);
-  const [wpm, setWpm] = useState(10);
   const [currentMorse, setCurrentMorse] = useState("");
   const [isPlayingBack, setIsPlayingBack] = useState(false);
+  const { state, dispatch } = useContext(AppContext);
 
   function getBasicUnit(){
-    return (1200 / wpm); // returns dot duration in milliseconds
+    return (1200 / state.wpm); // returns dot duration in milliseconds
   }
 
   function recordSymbol (symbol: string){
@@ -62,7 +63,7 @@ const HomePage: React.FC = () => {
 
   return (
     <IonPage>
-      <Header />
+      <Header title="mo.-.se code.-." showSettings={true}/>
       <div className="page-content">
         <Row justify="space-between" align="center">
           <IonInput 

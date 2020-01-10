@@ -1,14 +1,16 @@
-import { IonButtons, IonContent, IonHeader, IonIcon, IonItem, IonList, IonMenuButton, IonPage, IonTitle, IonToolbar, IonRange, IonLabel, IonItemDivider, IonButton, IonToggle, IonInput } from '@ionic/react';
+import { IonContent, IonIcon, IonItem, 
+  IonPage, IonRange, IonLabel, IonItemDivider, 
+  IonButton, IonToggle, IonInput, IonSelect, 
+  IonSelectOption } from '@ionic/react';
 import { play, square } from 'ionicons/icons';
 import React, { useState, useEffect, useRef, useContext } from 'react';
-import Row from '../components/Row';
 import { AppContext } from '../State';
+import Header from '../components/Header';
 
 const SettingsPage: React.FC = () => {
     const [context, setContext] = useState();
     const [oscillator, setOscillator] = useState();
     const [gainNode, setGainNode] = useState();
-    const [rangeClass, setRangeClass] = useState('');
     const [isPlaying, setIsPlaying] = useState(false);
 
     const { state, dispatch } = useContext(AppContext);
@@ -20,7 +22,7 @@ const SettingsPage: React.FC = () => {
       if(!isPlaying){
         let ctx = new AudioContext();
         let osc = ctx.createOscillator();
-        osc.type = "sine";
+        osc.type = state.toneType as OscillatorType;
         osc.frequency.setValueAtTime(state.frequency, ctx.currentTime);
         let gain = ctx.createGain();
         gain.gain.setTargetAtTime(0.2, ctx.currentTime, 0.15);
@@ -59,12 +61,31 @@ const SettingsPage: React.FC = () => {
     }
     
     function changeSound(e: any){
-      console.log(e);
-      setRangeClass('hidden');
+      dispatch({
+        type: 'setSound',
+        payload: e.detail.checked
+      })
     }
 
     function changeVibrate(e: any){
-      console.log(e);
+      dispatch({
+        type: 'setVibrate',
+        payload: e.detail.checked
+      })
+    }
+
+    function toneChange(e: any){
+      dispatch({
+        type: 'setToneType',
+        payload: e.target.value
+      })
+    }
+
+    function wpmChange(e: any){
+      dispatch({
+        type: 'setWpm',
+        payload: e.target.value
+      })
     }
 
     useEffect(() => {
@@ -73,25 +94,20 @@ const SettingsPage: React.FC = () => {
 
   return (
     <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonButtons slot="start">
-            <IonMenuButton />
-          </IonButtons>
-          <IonTitle>Settings</IonTitle>
-        </IonToolbar>
-      </IonHeader>
-
+      <Header title="Settings" />
       <IonContent>
       <IonItemDivider>
         <IonLabel>
           Theme
         </IonLabel>
       </IonItemDivider>
-        <IonItem>
-          <IonLabel>Dark Theme</IonLabel>
-          <IonToggle value="theme" onIonChange={changeTheme} />
-        </IonItem>
+      <IonItem>
+        <IonLabel>Theme</IonLabel>
+        <IonSelect onIonChange={changeTheme}>
+          <IonSelectOption value="light">Light</IonSelectOption>
+          <IonSelectOption value="dark">Dark</IonSelectOption>
+        </IonSelect>
+      </IonItem>
       <IonItemDivider>
         <IonLabel>
           Sound
@@ -99,18 +115,15 @@ const SettingsPage: React.FC = () => {
       </IonItemDivider>
         <IonItem>
           <IonLabel>Vibrate</IonLabel>
-          <IonToggle onIonChange={changeVibrate} />
+          <IonToggle onIonChange={changeVibrate} checked={state.vibrate} />
         </IonItem>
         <IonItem>
           <IonLabel>Tone</IonLabel>
-          <IonToggle onIonChange={changeSound} />
+          <IonToggle onIonChange={changeSound} checked={state.sound} />
         </IonItem>
-        <div style={{ 
-          display: 'flex', 
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center'
-        }}>
+        {(state.sound) ? (
+        <div>
+        <IonItem>
         <IonRange 
             min={min.current} 
             max={max.current} 
@@ -118,7 +131,6 @@ const SettingsPage: React.FC = () => {
             value={state.frequency}
             pin={true} 
             onIonChange={changeFrequency}
-            className={rangeClass}
         >
           <IonLabel slot="start">{ min.current } Hz</IonLabel>
           <IonLabel slot="end">{ max.current } Hz</IonLabel>
@@ -131,7 +143,18 @@ const SettingsPage: React.FC = () => {
         >
           <IonIcon icon={(isPlaying) ? square:play}></IonIcon>
         </IonButton>
+        </IonItem>
+        <IonItem>
+          <IonLabel>Tone Type</IonLabel>
+          <IonSelect onIonChange={toneChange}>
+            <IonSelectOption value="sine" selected={(state.toneType === 'sine')}>Sine</IonSelectOption>
+            <IonSelectOption value="square" selected={(state.toneType === 'square')}>Square</IonSelectOption>
+            <IonSelectOption value="sawtooth" selected={(state.toneType === 'sawtooth')}>Sawtooth</IonSelectOption>
+            <IonSelectOption value="triangle" selected={(state.toneType === 'triangle')}>Triangle</IonSelectOption>
+          </IonSelect>
+        </IonItem>
         </div>
+        ):null }
         <IonItemDivider>
           <IonLabel>
             Timing
@@ -143,22 +166,28 @@ const SettingsPage: React.FC = () => {
           </IonLabel>
           <IonToggle onClick={(e) => {console.log('Use Timing Tool Toggle', e)}} />
         </IonItem>
-        <div style={{ 
-          display: 'flex', 
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center'
-        }}>
+        <IonItem>
             <IonLabel>
               WPM
             </IonLabel>
-            <IonInput type="number" value="20" onChange={(e) => {console.log('wpm changed', e)}}>
-              
+            <IonInput 
+              slot="end"
+              type="number" 
+              value={state.wpm.toString()} 
+              onChange={wpmChange}
+              style={wpmInputStyle}
+            >  
             </IonInput>
-        </div>
+        </IonItem>
       </IonContent>
     </IonPage>
   );
 };  
+
+let wpmInputStyle = {
+  textAlign: 'right',
+  fontSize: '20px',
+  paddingRight: '30px'
+}
 
 export default SettingsPage;

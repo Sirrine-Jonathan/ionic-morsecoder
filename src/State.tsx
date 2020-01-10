@@ -9,7 +9,6 @@ type StateAction = {
   payload: any
 }
 
-
 interface AppContext {
   dispatch?: any,
   state: {
@@ -17,17 +16,12 @@ interface AppContext {
     vibrate: boolean,
     sound: boolean,
     frequency: number,
-    wpm: number
+    wpm: number,
+    toneType: string
   }
 }
 
 let initialContext = { state: getDefault() };
-
-/*
-getInitial().then((data) => {
-  initialContext.state = data;
-})
-*/
 
 let AppContext = React.createContext<AppContext>(initialContext);
 
@@ -48,11 +42,16 @@ let reducer = (state: any, action: StateAction) => {
       break;
     }
     case "setSound": {
+      console.log('in reducer', action);
       return { ...state, sound: action.payload }
       break;
     }
     case "setVibrate": {
       return { ...state, vibrate: action.payload }
+      break;
+    }
+    case "setToneType": {
+      return { ...state, toneType: action.payload }
       break;
     }
     case "setAll": {
@@ -75,14 +74,16 @@ function AppContextProvider(props: any) {
   
   useEffect(() => {
     if (hasBeenSet.current){
-      console.log('AppContext useEffect', state);
-      setItem(PERSISTANT, JSON.stringify({
+      let readyState = {
         theme: state.theme,
         vibrate: state.vibrate,
         sound: state.sound,
         frequency: state.frequency,
-        wpm: state.wpm
-      }));
+        wpm: state.wpm,
+        toneType: state.toneType,
+      }
+      console.log('ready state', readyState);
+      setItem(PERSISTANT, JSON.stringify(readyState));
     }
   }, [state]);
 
@@ -91,13 +92,11 @@ function AppContextProvider(props: any) {
     console.log('AppContext useEffect set state first', state);
     getInitial().then((data) => {
       dispatch({ type: 'setAll', payload: data });
-      console.log('AppContext useEffect set state second', state);
       hasBeenSet.current = true;
     })
     
   }, []);
   
-
   return (
     <AppContext.Provider value={value}>{props.children}</AppContext.Provider>
   );

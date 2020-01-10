@@ -31,7 +31,8 @@ function getDefault(){
         vibrate: true,
         sound: true,
         frequency: 440,
-        wpm: 20
+        wpm: 20,
+        toneType: 'sine',
     }
 }
 
