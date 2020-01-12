@@ -82,6 +82,7 @@ const SettingsPage: React.FC = () => {
     }
 
     function wpmChange(e: any){
+      console.log('wpmChange');
       dispatch({
         type: 'setWpm',
         payload: e.target.value
@@ -94,7 +95,7 @@ const SettingsPage: React.FC = () => {
 
   return (
     <IonPage>
-      <Header title="Settings" />
+      <Header title="Settings" showHome={true} />
       <IonContent>
       <IonItemDivider>
         <IonLabel>
@@ -174,7 +175,7 @@ const SettingsPage: React.FC = () => {
               slot="end"
               type="number" 
               value={state.wpm.toString()} 
-              onChange={wpmChange}
+              onIonChange={wpmChange}
               style={wpmInputStyle}
             >  
             </IonInput>

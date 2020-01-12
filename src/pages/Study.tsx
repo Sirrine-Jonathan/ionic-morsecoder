@@ -7,7 +7,7 @@ import Header from '../components/Header';
 const ListPage: React.FC = () => {
   return (
     <IonPage>
-      <Header title="Study" />
+      <Header title="Study" showSettings={true} />
       <IonContent>
         <ListItems />
       </IonContent>
@@ -24,10 +24,10 @@ const ListItems = () => {
     if (each == " ") return false;
     let alphareg = new RegExp(/^[a-zA-Z]+$/);
     if (!each.match(alphareg)){
-      nonAlpha.push(<SymbolListItem key={index} symbol={each} />);
+      nonAlpha.push(<SymbolListItem symbol={each} key={index}/>);
       return false;
     }
-    return (<SymbolListItem key={index} symbol={each} />);
+    return (<SymbolListItem symbol={each} key={index}/>);
   });
   items = items.concat(nonAlpha);
 

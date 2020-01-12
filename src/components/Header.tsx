@@ -1,26 +1,25 @@
-import { IonHeader, IonToolbar, IonButtons, IonMenuButton, IonTitle, IonIcon, IonRouterLink } from "@ionic/react";
+import { IonHeader, IonToolbar, IonButtons, IonMenuButton, IonTitle, IonIcon, IonRouterLink, IonBackButton } from "@ionic/react";
 import React from "react";
 import './Header.scss';
-import { settings } from "ionicons/icons";
+import { settings, home } from "ionicons/icons";
 
 interface HeaderProps {
     title: string,
-    showSettings?: boolean
+    showSettings?: boolean,
+    showHome?: boolean,
 }
 
-const settingsIconStyle = {
-    fontSize: '27px',
-    paddingRight: '12px',
-    color: 'rgba(0,0,0,0.50)'
-}
-
-const Header: React.FC<HeaderProps> = ({ title, showSettings = false }) => {
+const Header: React.FC<HeaderProps> = ({ 
+    title, 
+    showSettings = false,
+    showHome = false,
+ }) => {
     return (
         <IonHeader>
             <IonToolbar>
                 <IonButtons 
                     slot="start"
-                    className="buttonContainer"
+                    className="menuButtonContainer"
                 >
                     <IonMenuButton />
                 </IonButtons>
@@ -28,9 +27,32 @@ const Header: React.FC<HeaderProps> = ({ title, showSettings = false }) => {
                 { (showSettings) 
                     ? 
                     (
-                        <IonRouterLink slot="end" href="/home/settings">
-                            <IonIcon icon={settings} style={settingsIconStyle}></IonIcon>
-                        </IonRouterLink>
+                        <IonButtons
+                            slot="end"
+                            className="rightButtonContainer"
+                        >
+                            <IonRouterLink href="/home/settings">
+                                <IonIcon icon={settings} className="rightButton"></IonIcon>
+                            </IonRouterLink>
+                        </IonButtons>
+                    )
+                    :
+                    null 
+                }
+                { (showHome) 
+                    ? 
+                    (
+                        <IonButtons
+                            slot="end"
+                            className="rightButtonContainer"
+                        >
+                            <IonBackButton className="rightButton"/>
+                            {/*
+                            <IonRouterLink href="/home">
+                                <IonIcon icon={home} className="rightButton"></IonIcon>
+                            </IonRouterLink>
+                            */}
+                        </IonButtons>
                     )
                     :
                     null 

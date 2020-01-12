@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect, useRef } from 'react';
 import {
   IonButtons,
   IonContent,
@@ -21,6 +21,7 @@ import Dictionary from '../util/dictionary';
 import './Home.css';
 import Row from '../components/Row';
 import { AppContext } from '../State';
+import { TonePlayer } from '../util/sound';
 
 const HomePage: React.FC = () => {
 
@@ -28,6 +29,13 @@ const HomePage: React.FC = () => {
   const [currentMorse, setCurrentMorse] = useState("");
   const [isPlayingBack, setIsPlayingBack] = useState(false);
   const { state, dispatch } = useContext(AppContext);
+  const didMount = useRef(false);
+  const tone = useRef<any>(new TonePlayer(
+      state.wpm,
+      state.frequency,
+      state.toneType
+  ));
+
 
   function getBasicUnit(){
     return (1200 / state.wpm); // returns dot duration in milliseconds
@@ -60,6 +68,21 @@ const HomePage: React.FC = () => {
   function changeMorse(e: any){
     setCurrentMorse(e.target.value);
   }
+
+  useEffect(() => {
+    if (didMount.current){
+        if (isPlayingBack){
+            tone.current.setMorse(currentMorse);
+            tone.current.play(function(){
+                setIsPlayingBack(false);
+            });
+        } else {
+            tone.current.stop();
+        }
+    } else {
+        didMount.current = true;
+    }
+}, [isPlayingBack]);
 
   return (
     <IonPage>

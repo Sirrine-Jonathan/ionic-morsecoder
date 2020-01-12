@@ -1,93 +1,206 @@
+import Tone from "tone";
+
 class TonePlayer {
 
-    WORD_SPACE = '&';
-    LETTER_SPACE = '#';
-    SYMBOL_SPACE = '@';
+	WORD_SPACE = '&';
+	LETTER_SPACE = '#';
+	SYMBOL_SPACE = '@';
 
-    wpm: number;
-    baseUnit: number;
-    isPlaying: boolean = false;
-    symbols: string[];
+	wpm: number;
+	frequency: number;
+	baseUnit: number;
+	isPlaying: boolean = false;
+	symbols: string[] = [];
+	synth: Tone.Synth;
+	totalUnitsUsed: number = 0;
 
+	constructor(wpm: number, frequency: number, toneType: string){
+		this.wpm = wpm;
+		this.frequency = frequency;
+		this.baseUnit = this.getBaseUnit(this.wpm);
+		this.synth = new Tone.Synth({
+			oscillator: {
+				type: toneType as any
+			},
+			envelope: {
+				attack : 0.005 ,
+				decay : 0.005 ,
+				sustain : 1 ,
+				release : 0.005
+			}
+		}).toMaster();
+		Tone.Transport.start(0);
+	}
 
-    constructor(morse: string, wpm: number){
-        this.wpm = wpm;
-        this.baseUnit = this.getBaseUnit(this.wpm);
-        this.symbols = this.buildArray(morse);
-    }
+	setMorse = (morse: string) => {
+		Tone.Transport.cancel(Tone.context.now());
+		this.symbols = this.buildArray(morse);
+		this.totalUnitsUsed = this.calculateTotalUnitsUsed();
+		console.log(this.baseUnit);
+	}
 
-    getBaseUnit = (wpm: number) => {
-        return (1200 / wpm); // returns dot duration in milliseconds
-    }
+	buildArray = (morse: string) => {
+		return morse
+			.split(/\s\s\s/g)
+			.map(each => { return each.trim(); })
+			.map(each => { return each
+				.split(/\s/g)
+				.map(each => { return each.trim(); })
+				.map(each => { return each
+					.split('')
+					.map(each => { return each.trim(); })
+					.join(this.SYMBOL_SPACE);
+				})
+				.join(this.LETTER_SPACE);
+			})
+			.join(this.WORD_SPACE)
+			.split('');
+	}
 
-    playDot = () => {}
-    playDash = () => {}
-    playSymbolSpace = () => {}
-    playLetterSpace = () => {}
-    playWordSpace = () => {}
+	play = (callback: VoidFunction) => {
+		/*
+		let ref = this;
+		let time = Tone.context.now();
+		let elapsedUnits = 1;
+		console.log(this.totalUnitsUsed);
 
-    buildArray = (morse: string) => {
-        return morse
-            .split(/\s\s\s/g)
-            .map(each => { return each.trim(); })
-            .map(each => { return each
-                .split(/\s/g)
-                .map(each => { return each.trim(); })
-                .map(each => { return each
-                    .split('')
-                    .map(each => { return each.trim(); })
-                    .join(this.SYMBOL_SPACE);
-                })
-                .join(this.LETTER_SPACE);
-            })
-            .join(this.WORD_SPACE)
-            .split('');
-    }
+		function playDot(time: any, pitch: number){
+			console.log('dot');
+			ref.synth.triggerAttackRelease(pitch, ref.baseUnit, time);
+		}
+		function playDash(time: any, pitch: number){
+			console.log('dash');
+			ref.synth.triggerAttackRelease(pitch, ref.baseUnit * 3, time);
+		}
+		function endOfPlayback(){
+			callback();
+		}
+		function dot(){
+			var dot = new Tone.Event(playDot, ref.frequency);
+			dot.start('+' + (ref.baseUnit * elapsedUnits));
+		}
+		function dash(){
+			var dash = new Tone.Event(playDash, ref.frequency);
+			dash.start('+' + (ref.baseUnit * elapsedUnits));
+		}
+		function end(){
+			var end = new Tone.Event(endOfPlayback, null);
+			end.start('+' + (ref.baseUnit * ref.totalUnitsUsed));
+		}
 
-    playLetter = (letter: string) => {
-        letter.split('').forEach((symbol => {
-            if (symbol === '.'){
-                this.playDot();
-            } else {
-                this.playDash();
-            }
-        }))
-    }
+		ref.symbols.forEach((symbol) => {
+			switch(symbol){
+				case '.':
+					dot();
+					elapsedUnits++;
+				break;
+				case '-':
+					dash();
+					elapsedUnits += 3;
+				break;
+				case ref.SYMBOL_SPACE:
+					elapsedUnits++;
+				break;
+				case ref.LETTER_SPACE:
+					elapsedUnits += 3;
+				break;
+				case ref.WORD_SPACE:
+					elapsedUnits += 7;
+				break;
+			}
+		});
+		end();
+		
+		Tone.Transport.start(time);
+		*/
+				let ref = this;
+				let time = Tone.context.now();
+				let elapsedUnits = 1;
 
-    playWord = (word: string) => {
-        word.split(' ').forEach(letter => this.playLetter);
-    }
+				function playDot(){
+					console.log('dot');
+					ref.synth.triggerAttackRelease(ref.frequency, ref.baseUnit);
+				}
+				function playDash(){
+					console.log('dash');
+					ref.synth.triggerAttackRelease(ref.frequency, ref.baseUnit * 3);
+				}
+				function endOfPlayback(){
+					callback();
+				}
+				function schedule(event: VoidFunction){
+					Tone.Transport.scheduleOnce(event, '+' + (ref.baseUnit * elapsedUnits));
+				}
 
-    play = (text: string) => {
-        text.split('   ').forEach(word => this.playWord);
-    }
+				ref.symbols.forEach((symbol) => {
+					switch(symbol){
+						case '.':
+							schedule(playDot);
+							elapsedUnits++;
+						break;
+						case '-':
+							schedule(playDash);
+							elapsedUnits += 3;
+						break;
+						case ref.SYMBOL_SPACE:
+							elapsedUnits++;
+						break;
+						case ref.LETTER_SPACE:
+							elapsedUnits += 3;
+						break;
+						case ref.WORD_SPACE:
+							elapsedUnits += 7;
+						break;
+					}
+				});
+				Tone.Transport.scheduleOnce(endOfPlayback, '+' + (ref.baseUnit * ref.totalUnitsUsed));
+				
+				Tone.Transport.start(time);
+	}
 
-    stop = () => {
+	pause = () => {
+		console.log('pause');
+		Tone.Transport.pause();
+	}
 
-    }
+	stop = () => {
+		console.log('stop');
+		Tone.Transport.stop();
+	}
 
-    pause = () => {
+	print = () => {
+		console.log('Symbols Array', this.symbols);
+		console.log('Symobls String', this.symbols.join(''));
+		console.log('Simplified String', this.getSimpleString());
+	}
 
-    }
+	getSimpleString = () => {
+		return this.symbols.join('')
+			.split(this.SYMBOL_SPACE).join('')
+			.split(this.LETTER_SPACE).join(' ')
+			.split(this.WORD_SPACE).join('   ');
+	}
+	
+	// returns dot duration in seconds
+	getBaseUnit(wpm: number){
+		return (1200 / wpm) / 1000; 
+	}
 
-    resume = () => {
-
-    }
-
-    print = () => {
-        console.log('Symbols Array', this.symbols);
-        console.log('Symobls String', this.symbols.join(''));
-        console.log('Simplified String', this.getSimpleString());
-    }
-
-    getSimpleString = () => {
-        return this.symbols.join('')
-            .split(this.SYMBOL_SPACE).join('')
-            .split(this.LETTER_SPACE).join(' ')
-            .split(this.WORD_SPACE).join('   ');
-    }
+	calculateTotalUnitsUsed(){
+		let totalUnits = 0;
+		this.symbols.forEach((symbol) => {
+			if (symbol === '.' || symbol === this.SYMBOL_SPACE){
+				totalUnits++;
+			} else if (symbol === '-' || symbol === this.LETTER_SPACE){
+				totalUnits += 3;
+			} else if (symbol === this.WORD_SPACE){
+				totalUnits += 7;
+			}
+		});
+		return totalUnits;
+	}
 }
 
 export { 
-    TonePlayer
+	TonePlayer
 };
