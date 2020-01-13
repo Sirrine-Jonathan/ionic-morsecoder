@@ -23,11 +23,25 @@ import Row from '../components/Row';
 import { AppContext } from '../State';
 import { TonePlayer } from '../util/sound';
 
+const inputFontSize = '30px'
+
+const invisibleStyle = {
+  position: 'absolute' as 'absolute',
+  fontSize: inputFontSize,
+  top: '-100px'
+}
+
+const inputStyle = {
+  fontSize: inputFontSize,
+  overflowX: 'scroll'
+}
+
 const HomePage: React.FC = () => {
 
   const [isPushed, setIsPushed] = useState(false);
   const [currentMorse, setCurrentMorse] = useState("");
   const [isPlayingBack, setIsPlayingBack] = useState(false);
+  const [textWasCleared, setTextWasCleared] = useState(true);
   const { state, dispatch } = useContext(AppContext);
   const didMount = useRef(false);
   const tone = useRef<any>(new TonePlayer(
@@ -36,12 +50,13 @@ const HomePage: React.FC = () => {
       state.toneType
   ));
 
-
+  // returns dot duration in milliseconds
   function getBasicUnit(){
-    return (1200 / state.wpm); // returns dot duration in milliseconds
+    return (1200 / state.wpm); 
   }
 
   function recordSymbol (symbol: string){
+    checkScroll();
     setCurrentMorse(prevText => prevText += symbol);
   }
 
@@ -49,12 +64,14 @@ const HomePage: React.FC = () => {
     return Dictionary.interpret(currentMorse);
   }
 
-  function translate(english: string){
-    return Dictionary.translate(english);
-  }
-
   function eraseText(){
     setCurrentMorse(""); 
+    setTextWasCleared(true);
+    setIsPlayingBack(false);
+  }
+
+  function startRecordingText(){
+    setTextWasCleared(false);
   }
 
   function togglePlay(){
@@ -62,11 +79,17 @@ const HomePage: React.FC = () => {
   }
 
   function changeEnglish(e: any){
-    setCurrentMorse(translate(e.target.value));
+    let english = Dictionary.translate(e.target.value);
+    setCurrentMorse(english);
   }
 
-  function changeMorse(e: any){
-    setCurrentMorse(e.target.value);
+  function checkScroll(){
+    let morseInput = document.querySelector('#morseInput');
+    let invisible = document.querySelector('#invisible');
+    if (morseInput && invisible){
+      let rectInvisible = invisible.getBoundingClientRect();
+      console.log(rectInvisible);
+    }
   }
 
   useEffect(() => {
@@ -82,15 +105,16 @@ const HomePage: React.FC = () => {
     } else {
         didMount.current = true;
     }
-}, [isPlayingBack]);
+  }, [isPlayingBack]);
 
   return (
     <IonPage>
+      <span id="invisible" style={invisibleStyle}>{ currentMorse }</span>
       <Header title="mo.-.se code.-." showSettings={true}/>
       <div className="page-content">
         <Row justify="space-between" align="center">
           <IonInput 
-            style={{ fontSize: '30px'}} 
+            style={inputStyle} 
             value={ getTranslation() }
             onInput={changeEnglish}
             placeholder="English"
@@ -103,9 +127,12 @@ const HomePage: React.FC = () => {
         </Row>
         <Row justify="space-between" align="center">
           <IonInput 
-            style={{ fontSize: '30px'}} 
+            id="morseInput"
+            style={inputStyle} 
             value={ currentMorse }
-            onInput={changeMorse}
+            onInput={(e: any) => {
+              setCurrentMorse(e.target.value);
+            }}
             placeholder="Morse"
           ></IonInput>
           { 
@@ -117,7 +144,9 @@ const HomePage: React.FC = () => {
         <TimingTool 
           baseUnit={getBasicUnit()} 
           buttonPressed={isPushed}
-          onInputEnd={recordSymbol} 
+          onInputEnd={recordSymbol}
+          textWasCleared={textWasCleared}
+          startRecordingText={startRecordingText}
         />
         <EventfulButton
           onPress={() => {setIsPushed(true)}}

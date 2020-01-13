@@ -1,4 +1,4 @@
-import Tone from "tone";
+import Tone, { Time, Signal } from "tone";
 
 class TonePlayer {
 
@@ -58,44 +58,33 @@ class TonePlayer {
 	}
 
 	play = (callback: VoidFunction) => {
-		/*
 		let ref = this;
 		let time = Tone.context.now();
 		let elapsedUnits = 1;
-		console.log(this.totalUnitsUsed);
 
-		function playDot(time: any, pitch: number){
+		function playDot(){
 			console.log('dot');
-			ref.synth.triggerAttackRelease(pitch, ref.baseUnit, time);
+			ref.synth.triggerAttackRelease(ref.frequency, ref.baseUnit);
 		}
-		function playDash(time: any, pitch: number){
+		function playDash(){
 			console.log('dash');
-			ref.synth.triggerAttackRelease(pitch, ref.baseUnit * 3, time);
+			ref.synth.triggerAttackRelease(ref.frequency, ref.baseUnit * 3);
 		}
 		function endOfPlayback(){
 			callback();
 		}
-		function dot(){
-			var dot = new Tone.Event(playDot, ref.frequency);
-			dot.start('+' + (ref.baseUnit * elapsedUnits));
-		}
-		function dash(){
-			var dash = new Tone.Event(playDash, ref.frequency);
-			dash.start('+' + (ref.baseUnit * elapsedUnits));
-		}
-		function end(){
-			var end = new Tone.Event(endOfPlayback, null);
-			end.start('+' + (ref.baseUnit * ref.totalUnitsUsed));
+		function schedule(event: VoidFunction){
+			Tone.Transport.scheduleOnce(event, '+' + (ref.baseUnit * elapsedUnits));
 		}
 
 		ref.symbols.forEach((symbol) => {
 			switch(symbol){
 				case '.':
-					dot();
+					schedule(playDot);
 					elapsedUnits++;
 				break;
 				case '-':
-					dash();
+					schedule(playDash);
 					elapsedUnits += 3;
 				break;
 				case ref.SYMBOL_SPACE:
@@ -109,62 +98,16 @@ class TonePlayer {
 				break;
 			}
 		});
-		end();
+		Tone.Transport.scheduleOnce(endOfPlayback, '+' + (ref.baseUnit * ref.totalUnitsUsed));
 		
 		Tone.Transport.start(time);
-		*/
-				let ref = this;
-				let time = Tone.context.now();
-				let elapsedUnits = 1;
-
-				function playDot(){
-					console.log('dot');
-					ref.synth.triggerAttackRelease(ref.frequency, ref.baseUnit);
-				}
-				function playDash(){
-					console.log('dash');
-					ref.synth.triggerAttackRelease(ref.frequency, ref.baseUnit * 3);
-				}
-				function endOfPlayback(){
-					callback();
-				}
-				function schedule(event: VoidFunction){
-					Tone.Transport.scheduleOnce(event, '+' + (ref.baseUnit * elapsedUnits));
-				}
-
-				ref.symbols.forEach((symbol) => {
-					switch(symbol){
-						case '.':
-							schedule(playDot);
-							elapsedUnits++;
-						break;
-						case '-':
-							schedule(playDash);
-							elapsedUnits += 3;
-						break;
-						case ref.SYMBOL_SPACE:
-							elapsedUnits++;
-						break;
-						case ref.LETTER_SPACE:
-							elapsedUnits += 3;
-						break;
-						case ref.WORD_SPACE:
-							elapsedUnits += 7;
-						break;
-					}
-				});
-				Tone.Transport.scheduleOnce(endOfPlayback, '+' + (ref.baseUnit * ref.totalUnitsUsed));
-				
-				Tone.Transport.start(time);
 	}
 
 	pause = () => {
-		console.log('pause');
 		Tone.Transport.pause();
 	}
 
 	stop = () => {
-		console.log('stop');
 		Tone.Transport.stop();
 	}
 
@@ -198,6 +141,27 @@ class TonePlayer {
 			}
 		});
 		return totalUnits;
+	}
+
+	startTone(){
+		this.synth.triggerAttack(this.frequency);
+	}
+
+	stopTone(){
+		this.synth.triggerRelease();
+	}
+
+	setWpm(wpm: number){
+
+	}
+
+	setTone(tone: string){
+		this.synth.oscillator.type = tone as Tone.OscillatorType;
+	}
+
+	setFrequency(frequency: number){
+		this.frequency = frequency;
+		this.synth.setNote(frequency);
 	}
 }
 

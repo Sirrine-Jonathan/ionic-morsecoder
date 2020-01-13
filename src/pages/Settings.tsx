@@ -6,46 +6,26 @@ import { play, square } from 'ionicons/icons';
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import { AppContext } from '../State';
 import Header from '../components/Header';
+import { TonePlayer } from '../util/sound';
 
 const SettingsPage: React.FC = () => {
     const [context, setContext] = useState();
     const [oscillator, setOscillator] = useState();
     const [gainNode, setGainNode] = useState();
     const [isPlaying, setIsPlaying] = useState(false);
-
     const { state, dispatch } = useContext(AppContext);
+    const tone = useRef<any>(new TonePlayer(
+      state.wpm,
+      state.frequency,
+      state.toneType
+    ));
 
     const min = useRef(200);
     const max = useRef(1000);
-  
-    function startOsc(){ 
-      if(!isPlaying){
-        let ctx = new AudioContext();
-        let osc = ctx.createOscillator();
-        osc.type = state.toneType as OscillatorType;
-        osc.frequency.setValueAtTime(state.frequency, ctx.currentTime);
-        let gain = ctx.createGain();
-        gain.gain.setTargetAtTime(0.2, ctx.currentTime, 0.15);
-        osc.connect(gain);
-      
-        gain.connect(ctx.destination);
-        osc.start();
-        setIsPlaying(true);
-        setContext(ctx);
-        setOscillator(osc);
-        setGainNode(gain);
-      }
-    };
-  
-    function off() {
-      if (isPlaying){
-        gainNode.gain.setTargetAtTime(0, context.currentTime, 0.015);
-        setIsPlaying(false);
-      }
-    }
 
     function changeFrequency(e: any){
       dispatch({ type: "setFrequency", payload: e.target.value });
+      tone.current.setFrequency(e.target.value);
       if (oscillator){
         oscillator.frequency.setValueAtTime(e.target.value, context.currentTime);
       }
@@ -78,7 +58,8 @@ const SettingsPage: React.FC = () => {
       dispatch({
         type: 'setToneType',
         payload: e.target.value
-      })
+      });
+      tone.current.setTone(e.target.value);
     }
 
     function wpmChange(e: any){
@@ -87,11 +68,20 @@ const SettingsPage: React.FC = () => {
         type: 'setWpm',
         payload: e.target.value
       })
+      tone.current.setWpm(e.target.value);
     }
 
     useEffect(() => {
       console.log('useEffect Settings', state);
-    }, [state])
+    }, [state]);
+
+    useEffect(() => {
+          if (isPlaying){
+              tone.current.startTone();
+          } else {
+              tone.current.stopTone();
+          }
+    }, [isPlaying]);
 
   return (
     <IonPage>
@@ -111,62 +101,43 @@ const SettingsPage: React.FC = () => {
       </IonItem>
       <IonItemDivider>
         <IonLabel>
-          Sound
+          Tone Quality
         </IonLabel>
       </IonItemDivider>
-        <IonItem>
-          <IonLabel>Vibrate</IonLabel>
-          <IonToggle onIonChange={changeVibrate} checked={state.vibrate} />
-        </IonItem>
-        <IonItem>
-          <IonLabel>Tone</IonLabel>
-          <IonToggle onIonChange={changeSound} checked={state.sound} />
-        </IonItem>
-        {(state.sound) ? (
         <div>
-        <IonItem>
-        <IonRange 
-            min={min.current} 
-            max={max.current} 
-            defaultValue={state.frequency}
-            value={state.frequency}
-            pin={true} 
-            onIonChange={changeFrequency}
-        >
-          <IonLabel slot="start">{ min.current } Hz</IonLabel>
-          <IonLabel slot="end">{ max.current } Hz</IonLabel>
-        </IonRange>
-        <IonButton 
-          fill="outline" 
-          size="small"
-          style={{flex: 1, margin: '0 15px'}}
-          onClick={(isPlaying) ? off:startOsc}
-        >
-          <IonIcon icon={(isPlaying) ? square:play}></IonIcon>
-        </IonButton>
-        </IonItem>
-        <IonItem>
-          <IonLabel>Tone Type</IonLabel>
-          <IonSelect onIonChange={toneChange}>
-            <IonSelectOption value="sine" selected={(state.toneType === 'sine')}>Sine</IonSelectOption>
-            <IonSelectOption value="square" selected={(state.toneType === 'square')}>Square</IonSelectOption>
-            <IonSelectOption value="sawtooth" selected={(state.toneType === 'sawtooth')}>Sawtooth</IonSelectOption>
-            <IonSelectOption value="triangle" selected={(state.toneType === 'triangle')}>Triangle</IonSelectOption>
-          </IonSelect>
-        </IonItem>
+          <IonItem>
+          <IonRange 
+              min={min.current} 
+              max={max.current} 
+              defaultValue={state.frequency}
+              value={state.frequency}
+              pin={true} 
+              onIonChange={changeFrequency}
+          >
+            <IonLabel slot="start">{ min.current } Hz</IonLabel>
+            <IonLabel slot="end">{ max.current } Hz</IonLabel>
+          </IonRange>
+          <IonButton 
+            fill="outline" 
+            size="small"
+            style={{flex: 1, margin: '0 15px'}}
+            onClick={() => {
+              setIsPlaying(!isPlaying);
+            }}
+          >
+            <IonIcon icon={(isPlaying) ? square:play}></IonIcon>
+          </IonButton>
+          </IonItem>
+          <IonItem>
+            <IonLabel>Tone Type</IonLabel>
+            <IonSelect onIonChange={toneChange}>
+              <IonSelectOption value="sine" selected={(state.toneType === 'sine')}>Sine</IonSelectOption>
+              <IonSelectOption value="square" selected={(state.toneType === 'square')}>Square</IonSelectOption>
+              <IonSelectOption value="sawtooth" selected={(state.toneType === 'sawtooth')}>Sawtooth</IonSelectOption>
+              <IonSelectOption value="triangle" selected={(state.toneType === 'triangle')}>Triangle</IonSelectOption>
+            </IonSelect>
+          </IonItem>
         </div>
-        ):null }
-        <IonItemDivider>
-          <IonLabel>
-            Timing
-          </IonLabel>
-        </IonItemDivider>
-        <IonItem>
-          <IonLabel>
-            Use Timing Tool
-          </IonLabel>
-          <IonToggle onClick={(e) => {console.log('Use Timing Tool Toggle', e)}} />
-        </IonItem>
         <IonItem>
             <IonLabel>
               WPM

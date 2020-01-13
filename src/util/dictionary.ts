@@ -60,7 +60,6 @@ function translate(english: string){
 }
 
 function interpret(morse: string){
-    console.log('morse', morse);
     let englishArr: string[] = [];
     const regex = /\s\s\s/g;
     let wordArr = morse.split(regex);

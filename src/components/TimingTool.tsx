@@ -2,13 +2,16 @@ import {
   IonProgressBar
 } from '@ionic/react';
 import React, { useState, useEffect, useRef } from 'react';
+import TimingBar from './TimingBar';
 
 type EventCallback = (param?: any) => any;
 
 interface TimingToolProps {
   baseUnit: number,
   buttonPressed: boolean,
-  onInputEnd: EventCallback
+  onInputEnd: EventCallback,
+  textWasCleared: boolean,
+  startRecordingText: EventCallback
 }
 
 const SharedStyle = {
@@ -27,7 +30,7 @@ const LevelThree = {
   backgroundColor: "#064ECD"
 }
 
-const TimingTool: React.FunctionComponent<TimingToolProps> = ({ baseUnit, buttonPressed, onInputEnd }) => {
+const TimingTool: React.FunctionComponent<TimingToolProps> = ({ baseUnit, buttonPressed, onInputEnd, textWasCleared, startRecordingText }) => {
 
   const [time, setTime] = useState(0);
   const [shouldReset, setShouldReset] = useState(false);
@@ -54,7 +57,11 @@ const TimingTool: React.FunctionComponent<TimingToolProps> = ({ baseUnit, button
       const deltaTime = timestamp - previousTimeRef.current;
       setTime(deltaTime);
       let symbol = emitSymbol();
-      onInputEnd(symbol);
+      if (!textWasCleared){
+        onInputEnd(symbol);
+      } else {
+        startRecordingText();
+      }
     }
     requestRef.current = requestAnimationFrame(keepTime);
   }
@@ -128,8 +135,12 @@ const TimingTool: React.FunctionComponent<TimingToolProps> = ({ baseUnit, button
 
   return (
     <>
+      {/* 
       <IonProgressBar style={getSoundStyle()} value={soundPercent}></IonProgressBar>
       <IonProgressBar style={getSilentStyle()} value={silentPercent}></IonProgressBar>
+      */}
+      <TimingBar value={soundPercent} />
+      <TimingBar value={silentPercent} />
     </>
   );
 }
