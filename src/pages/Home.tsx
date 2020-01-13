@@ -28,7 +28,7 @@ const inputFontSize = '30px'
 const invisibleStyle = {
   position: 'absolute' as 'absolute',
   fontSize: inputFontSize,
-  top: '-100px'
+  top: '60px'
 }
 
 const inputStyle = {
@@ -84,36 +84,37 @@ const HomePage: React.FC = () => {
   }
 
   function checkScroll(){
-    let morseInput = document.querySelector('#morseInput');
-    let invisible = document.querySelector('#invisible');
-    if (morseInput && invisible){
-      let rectInvisible = invisible.getBoundingClientRect();
-      console.log(rectInvisible);
+    let morseInput = document.querySelector('#morseInput input');
+    let alphaInput = document.querySelector('#alphaInput input');
+    if (morseInput && alphaInput){
+      morseInput.scrollLeft = morseInput.scrollWidth + 10;
+      alphaInput.scrollLeft = alphaInput.scrollWidth + 10;
     }
   }
 
   useEffect(() => {
     if (didMount.current){
-        if (isPlayingBack){
-            tone.current.setMorse(currentMorse);
-            tone.current.play(function(){
-                setIsPlayingBack(false);
-            });
-        } else {
-            tone.current.stop();
-        }
+      if (isPlayingBack){
+        tone.current.setMorse(currentMorse);
+        tone.current.play(function(){
+          setIsPlayingBack(false);
+        });
+      } else {
+        tone.current.stop();
+      }
     } else {
-        didMount.current = true;
+      didMount.current = true;
     }
   }, [isPlayingBack]);
 
   return (
     <IonPage>
-      <span id="invisible" style={invisibleStyle}>{ currentMorse }</span>
+      <div id="invisible" style={invisibleStyle}>{ currentMorse }</div>
       <Header title="mo.-.se code.-." showSettings={true}/>
       <div className="page-content">
         <Row justify="space-between" align="center">
           <IonInput 
+            id="alphaInput"
             style={inputStyle} 
             value={ getTranslation() }
             onInput={changeEnglish}
