@@ -13,6 +13,7 @@ import {
 import React from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { AppPage } from '../declarations';
+import './Menu.scss';
 
 interface MenuProps extends RouteComponentProps {
   appPages: AppPage[];
@@ -20,12 +21,12 @@ interface MenuProps extends RouteComponentProps {
 
 const Menu: React.FunctionComponent<MenuProps> = ({ appPages }) => (
   <IonMenu contentId="main" type="overlay">
-    <IonHeader>
+    <IonHeader className="MenuHeader">
       <IonToolbar>
         <IonTitle>Menu</IonTitle>
       </IonToolbar>
     </IonHeader>
-    <IonContent>
+    <IonContent className="MenuBody">
       <IonList>
         {appPages.map((appPage, index) => {
           return (

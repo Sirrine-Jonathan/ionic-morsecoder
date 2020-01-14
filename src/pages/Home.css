@@ -4,8 +4,10 @@
 }
 
 .page-content {
-	display: flex;
-	flex-direction: column;
-	justify-content: flex-end;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    flex: 1;
+    overflow: scroll;
 }
 

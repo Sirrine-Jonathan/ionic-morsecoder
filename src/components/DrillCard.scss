@@ -1,0 +1,11 @@
+.drillCard {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 2px;
+    padding: 15px;
+    font-size: 20px;
+    text-align: center;
+    background-color: var(--ion-color-secondary-shade);
+    color: var(--ion-color-secondary-contrast);
+}

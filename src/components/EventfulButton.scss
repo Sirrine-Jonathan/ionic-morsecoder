@@ -6,13 +6,13 @@
 .eventful-pressed {
 	width: 100%;
     height: 100px;
-    background-color: #064ecd;
+    background-color: var(--ion-color-primary-shade);
     transition: all 0.2s ease 0s;
 }
 
 .eventful-unpressed {
 	width: 100%;
     height: 100px;
-    background-color: #064ecd;
+    background-color:var(--ion-color-primary);
     transition: all 0.2s ease 0s;
 }

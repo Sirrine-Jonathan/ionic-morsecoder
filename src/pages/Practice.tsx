@@ -10,6 +10,7 @@ import { AppContext } from "../State";
 import drills from '../util/drills';
 import DrillCard from "../components/DrillCard";
 import dictionary from "../util/dictionary";
+import './Practice.scss';
 
 function shuffle(array: any[]) {
   array.sort(() => Math.random() - 0.5);
@@ -40,17 +41,14 @@ const PracticePage: React.FC = () => {
     setTextWasCleared(false);
   }
 
-  const answerPreviewStyle = {
-    textAlign: 'center' as 'center',
-    fontSize: '30px'
-  }
-
   return (
       <IonPage>
         <Header title="Practice" showSettings={true} />
         <div className="page-content">
+          {/* <ListCards drills={sessionDrills.current} /> */}
           <ListCards drills={sessionDrills.current} />
-          <IonText style={answerPreviewStyle}>{dictionary.interpret(currentMorse)}</IonText>
+          <div className="drillsContainer">
+          <IonText className="answerPreview">{dictionary.interpret(currentMorse)}</IonText>
           <TimingTool 
             baseUnit={getBasicUnit()} 
             buttonPressed={isPushed}
@@ -64,6 +62,7 @@ const PracticePage: React.FC = () => {
           >
             <IonIcon icon={ keypad } style={{fontSize: "90px"}}/>
           </EventfulButton>
+          </div>
         </div>
       </IonPage>
   );
@@ -78,7 +77,7 @@ const ListCards: React.FC<ListCardsProps> = ({ drills}) => {
     return (<DrillCard title={each} key={index}/>);
   });
   items = items;
-  return <IonList>{items}</IonList>;
+  return (<div>{items}</div>);
 };
 
 export default PracticePage;

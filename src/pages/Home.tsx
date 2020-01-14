@@ -23,16 +23,8 @@ import Row from '../components/Row';
 import { AppContext } from '../State';
 import { TonePlayer } from '../util/sound';
 
-const inputFontSize = '30px'
-
-const invisibleStyle = {
-  position: 'absolute' as 'absolute',
-  fontSize: inputFontSize,
-  top: '60px'
-}
-
 const inputStyle = {
-  fontSize: inputFontSize,
+  fontSize: '30px',
   overflowX: 'scroll'
 }
 
@@ -87,8 +79,8 @@ const HomePage: React.FC = () => {
     let morseInput = document.querySelector('#morseInput input');
     let alphaInput = document.querySelector('#alphaInput input');
     if (morseInput && alphaInput){
-      morseInput.scrollLeft = morseInput.scrollWidth + 10;
-      alphaInput.scrollLeft = alphaInput.scrollWidth + 10;
+      morseInput.scrollLeft = morseInput.scrollWidth;
+      alphaInput.scrollLeft = alphaInput.scrollWidth;
     }
   }
 
@@ -109,7 +101,6 @@ const HomePage: React.FC = () => {
 
   return (
     <IonPage>
-      <div id="invisible" style={invisibleStyle}>{ currentMorse }</div>
       <Header title="mo.-.se code.-." showSettings={true}/>
       <div className="page-content">
         <Row justify="space-between" align="center">
