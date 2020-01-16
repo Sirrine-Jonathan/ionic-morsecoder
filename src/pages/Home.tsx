@@ -18,7 +18,7 @@ import TextInput from '../components/TextInput';
 import Header from '../components/Header';
 import { close, play, square } from 'ionicons/icons';
 import Dictionary from '../util/dictionary';
-import './Home.css';
+import '../theme/style.scss';
 import Row from '../components/Row';
 import { AppContext } from '../State';
 import { TonePlayer } from '../util/sound';

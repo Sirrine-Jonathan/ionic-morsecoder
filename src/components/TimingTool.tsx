@@ -11,26 +11,18 @@ interface TimingToolProps {
   buttonPressed: boolean,
   onInputEnd: EventCallback,
   textWasCleared: boolean,
-  startRecordingText: EventCallback
+  startRecordingText: EventCallback,
+  clear?: EventCallback
 }
 
-const SharedStyle = {
-  height: '25px'
-}
-
-const LevelOne = {
-  backgroundColor: "#6CB4FF"
-}
-
-const LevelTwo = {
-  backgroundColor: "#3981FF"
-}
-
-const LevelThree = {
-  backgroundColor: "#064ECD"
-}
-
-const TimingTool: React.FunctionComponent<TimingToolProps> = ({ baseUnit, buttonPressed, onInputEnd, textWasCleared, startRecordingText }) => {
+const TimingTool: React.FunctionComponent<TimingToolProps> = ({ 
+  baseUnit, 
+  buttonPressed, 
+  onInputEnd, 
+  textWasCleared, 
+  startRecordingText,
+  clear
+}) => {
 
   const [time, setTime] = useState(0);
   const [shouldReset, setShouldReset] = useState(false);
@@ -39,17 +31,32 @@ const TimingTool: React.FunctionComponent<TimingToolProps> = ({ baseUnit, button
   const previousButtonState = useRef(buttonPressed);
   const started = useRef(false);
 
-  let soundPercent = (buttonPressed) ? getPercent(6):0;
-  let silentPercent = (buttonPressed) ? 0:getPercent(14);
+  // the 6 and 14 comes from the total units that
+  // make sense for each segment. A tone should only last
+  // 3 units so we allow double that for the timing tool. 
+  // this way a use should know to release the key in the 
+  // second half of the timing bar so as to create a dash
+  // since the longest time the button should remain unpressed
+  // is 7, to emit a word space, we allow double that for 
+  // the silent bar
+  let soundPercent = (buttonPressed) ? getPercent(4):0;
+  let silentPercent = (buttonPressed) ? 0:getPercent(8);
 
+  // this function returns the percentage 
+  // of the current time since the button was last pressed or
+  // released of a total unit.
   function getPercent(multiplier: number = 1){
     return time / ((baseUnit * multiplier));
   }
 
   function keepTime(timestamp: number){
-    if (previousTimeRef !== undefined){
+    if (previousTimeRef.current !== undefined){
       const deltaTime = timestamp - previousTimeRef.current;
       setTime(prevCount => (prevCount + deltaTime));
+      let passedUnits = Math.floor(time / baseUnit);
+      if (clear && !buttonPressed && (passedUnits > 14)){
+        clear();
+      }
     }
     previousTimeRef.current = timestamp;
     if (shouldReset){
@@ -82,52 +89,40 @@ const TimingTool: React.FunctionComponent<TimingToolProps> = ({ baseUnit, button
     }
   }, [buttonPressed]);
 
-  function getSoundStyle(){
+  function getSoundLevel(){
     if (getPercent(2) < 1){
-      return {
-        height: SharedStyle.height,
-        "--progress-background": LevelOne.backgroundColor
-      }
+      return 1
     } else {
-      return {
-        height: SharedStyle.height,
-        "--progress-background": LevelThree.backgroundColor
-      }
+      return 3
     }
   }
 
-  function getSilentStyle(){
+  function getSilentLevel(){
     if (getPercent(2) < 1){
-      return {
-        height: SharedStyle.height,
-        "--progress-background": LevelOne.backgroundColor
-      }
+      return 1
     } else if (getPercent(6) < 1) {
-      return {
-        height: SharedStyle.height,
-        "--progress-background": LevelTwo.backgroundColor
-      }
+      return 2
     } else {
-      return {
-        height: SharedStyle.height,
-        "--progress-background": LevelThree.backgroundColor
-      }
+      return 3
     }
   }
 
   function emitSymbol(){
+    let level;
     if (!buttonPressed){
-      if (getPercent(2) < 1){
+      level = getSoundLevel();
+      if (level === 1){
         return '.';
-      } else {
+      } else if (level === 3) {
         return '-';
-      } 
+      }
     } else {
-      if (getPercent(2) < 1){
+      level = getSilentLevel();
+      if (level === 1){
         return '';
-      } else if (getPercent(6) < 1) {
+      } else if (level === 2) {
         return ' ';
-      } else {
+      } else if (level === 3){
         return '   ';
       }
     }
@@ -136,11 +131,15 @@ const TimingTool: React.FunctionComponent<TimingToolProps> = ({ baseUnit, button
   return (
     <>
       {/* 
-      <IonProgressBar style={getSoundStyle()} value={soundPercent}></IonProgressBar>
-      <IonProgressBar style={getSilentStyle()} value={silentPercent}></IonProgressBar>
+      
+      // probably need to include height style on this for it to work again
+
+      <IonProgressBar value={soundPercent}></IonProgressBar>
+      <IonProgressBar value={silentPercent}></IonProgressBar>
+
       */}
-      <TimingBar value={soundPercent} />
-      <TimingBar value={silentPercent} />
+      <TimingBar value={soundPercent} level={getSoundLevel()}/>
+      <TimingBar value={silentPercent} level={getSilentLevel()}/>
     </>
   );
 }

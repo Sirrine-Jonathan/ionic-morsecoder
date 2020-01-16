@@ -3,6 +3,7 @@ import Dictionary from '../util/dictionary';
 import React from 'react';
 import SymbolListItem from '../components/SymbolListItem';
 import Header from '../components/Header';
+import '../theme/style.scss';
 
 const ListPage: React.FC = () => {
   return (
@@ -27,7 +28,7 @@ const ListItems = () => {
       nonAlpha.push(<SymbolListItem symbol={each} key={index}/>);
       return false;
     }
-    return (<SymbolListItem symbol={each} key={index}/>);
+    return (<SymbolListItem className="studyItem" symbol={each} key={index}/>);
   });
   items = items.concat(nonAlpha);
 

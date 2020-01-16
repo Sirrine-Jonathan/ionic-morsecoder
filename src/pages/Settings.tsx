@@ -7,6 +7,7 @@ import React, { useState, useEffect, useRef, useContext } from 'react';
 import { AppContext } from '../State';
 import Header from '../components/Header';
 import { TonePlayer } from '../util/sound';
+import '../theme/style.scss';
 
 const SettingsPage: React.FC = () => {
     const [context, setContext] = useState();

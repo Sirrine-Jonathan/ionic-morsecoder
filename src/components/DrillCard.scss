@@ -1,11 +1,30 @@
+/*
 .drillCard {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 2px;
+    margin: 6px 10px;
     padding: 15px;
     font-size: 20px;
     text-align: center;
-    background-color: var(--ion-color-secondary-shade);
+    background-color: var(--ion-color-secondary-tint);
     color: var(--ion-color-secondary-contrast);
+}
+*/
+
+.drillCard {
+    margin: 2px;
+    padding: 5px 15px;
+    font-size: 20px;
+    background-color: var(--ion-color-secondary-tint);
+    color: var(--ion-color-secondary-contrast);
+}
+
+.drillList {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.drillCard:first-of-type {
+    background-color: var(--ion-color-secondary-shade);
 }

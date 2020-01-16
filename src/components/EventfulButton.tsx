@@ -25,14 +25,14 @@ const EventfulButton: React.FC<EventfulButtonProps> = ({ onPress, onRelease, chi
     state.toneType
   ));
 
-  function startOsc(frequency: number){     
+  function startOsc(frequency: number){
     tone.current.startTone();
-    Haptics.selectionStart();
+    //Haptics.selectionStart();
   };
 
   function off() {
     tone.current.stopTone();
-    Haptics.selectionEnd();
+    //Haptics.selectionEnd();
   }
 
   let classname = "";

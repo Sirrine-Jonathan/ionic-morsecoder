@@ -1,32 +1,34 @@
-import { IonPage, IonContent, IonIcon, IonText, IonCard, IonList } from "@ionic/react";
+import { IonPage, IonContent, IonIcon, IonText, IonCard, IonList, IonButton } from "@ionic/react";
 
-import React, { useState, useContext, useRef } from "react";
+import React, { useState, useContext, useRef, useEffect } from "react";
 
 import Header from "../components/Header";
 import TimingTool from "../components/TimingTool";
 import EventfulButton from "../components/EventfulButton";
 import { keypad } from "ionicons/icons";
 import { AppContext } from "../State";
-import drills from '../util/drills';
+import { getDrills } from '../util/drills';
 import DrillCard from "../components/DrillCard";
-import dictionary from "../util/dictionary";
-import './Practice.scss';
-
-function shuffle(array: any[]) {
-  array.sort(() => Math.random() - 0.5);
-  return array;
-}
-shuffle(drills);
+import Dictionary from "../util/dictionary";
+import '../theme/style.scss';
+import { TonePlayer } from "../util/sound";
+import { refresh } from 'ionicons/icons';
 
 const PracticePage: React.FC = () => {
 
   const [isPushed, setIsPushed] = useState(false);
   const [currentMorse, setCurrentMorse] = useState("");
   const [textWasCleared, setTextWasCleared] = useState(true);
-  const [drillIndex, setDrillIndex] = useState(Math.random() * drills.length);
+  const [drillIndex, setDrillIndex] = useState(0);
   const [text, setText] = useState('');
-  const sessionDrills = useRef(drills);
+  const [needsRefresh, setNeedsRefresh] = useState(false);
+  const sessionDrills = useRef(getDrills());
   const { state, dispatch } = useContext(AppContext);
+  const tone = useRef<any>(new TonePlayer(
+    state.wpm,
+    state.frequency,
+    state.toneType
+  ));
 
   // returns dot duration in milliseconds
   function getBasicUnit(){
@@ -41,24 +43,68 @@ const PracticePage: React.FC = () => {
     setTextWasCleared(false);
   }
 
+  function setNextIndex(){
+    
+  }
+
+  function refreshFn(){
+    sessionDrills.current = getDrills();
+    setDrillIndex(sessionDrills.current.length - 1);
+    setNeedsRefresh(false);
+  }
+
+  useEffect(function(){
+    if (sessionDrills.current && sessionDrills.current.length > 0){
+      let currentDrillString = sessionDrills.current[drillIndex].toLowerCase();
+      let currentString = Dictionary.interpret(currentMorse).toLowerCase();
+      let index = currentString.search(currentDrillString);
+      if (index >= 0){
+        sessionDrills.current.shift();
+        setCurrentMorse('');
+        tone.current.playSound('Got One');
+      }
+    } else {
+      tone.current.playSound('Win');
+      setNeedsRefresh(true);
+    }
+
+
+  }, [currentMorse, drillIndex]);
+
+  function clear(){
+    setCurrentMorse('');
+  }
+
   return (
       <IonPage>
         <Header title="Practice" showSettings={true} />
         <div className="page-content">
-          {/* <ListCards drills={sessionDrills.current} /> */}
-          <ListCards drills={sessionDrills.current} />
+          {(needsRefresh) ?
+            (
+              <div className="refresh" onClick={refreshFn}>
+                <IonButton  slot="center" className="refreshBtn">
+                  <IonIcon slot="icon-only" icon={refresh} />
+                </IonButton>
+              </div>
+            )
+            :
+            (
+              <ListCards drills={sessionDrills.current}/>
+            )
+          }
           <div className="drillsContainer">
-          <IonText className="answerPreview">{dictionary.interpret(currentMorse)}</IonText>
+          <IonText className="answerPreview">{Dictionary.interpret(currentMorse)}</IonText>
           <TimingTool 
             baseUnit={getBasicUnit()} 
             buttonPressed={isPushed}
             onInputEnd={recordSymbol}
             textWasCleared={textWasCleared}
             startRecordingText={startRecordingText}
+            clear={clear}
           />
           <EventfulButton
             onPress={() => {setIsPushed(true)}}
-            onRelease={() => {setIsPushed(false);}}
+            onRelease={() => {setIsPushed(false)}}
           >
             <IonIcon icon={ keypad } style={{fontSize: "90px"}}/>
           </EventfulButton>
@@ -72,12 +118,12 @@ interface ListCardsProps {
   drills: string[]
 }
 
-const ListCards: React.FC<ListCardsProps> = ({ drills}) => {
+const ListCards: React.FC<ListCardsProps> = ({ drills }) => {
   let items = drills.map((each, index) => {
     return (<DrillCard title={each} key={index}/>);
   });
   items = items;
-  return (<div>{items}</div>);
+  return (<div className="drillList" >{items}</div>);
 };
 
 export default PracticePage;

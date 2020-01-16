@@ -1,6 +1,6 @@
 import { IonHeader, IonToolbar, IonButtons, IonMenuButton, IonTitle, IonIcon, IonRouterLink, IonBackButton } from "@ionic/react";
 import React from "react";
-import './Header.scss';
+import '../theme/style.scss';
 import { settings, home } from "ionicons/icons";
 
 interface HeaderProps {

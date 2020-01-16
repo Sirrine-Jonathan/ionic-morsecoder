@@ -1,4 +1,6 @@
 import Tone, { Time, Signal } from "tone";
+import { Plugins, FilesystemDirectory, FilesystemEncoding } from '@capacitor/core';
+const { Filesystem } = Plugins;
 
 class TonePlayer {
 
@@ -13,6 +15,8 @@ class TonePlayer {
 	symbols: string[] = [];
 	synth: Tone.Synth;
 	totalUnitsUsed: number = 0;
+	sounds: Tone.Players;
+	soundsLoaded: boolean = false;
 
 	constructor(wpm: number, frequency: number, toneType: string){
 		this.wpm = wpm;
@@ -30,6 +34,17 @@ class TonePlayer {
 			}
 		}).toMaster();
 		Tone.Transport.start(0);
+
+		// load game sounds
+		const gotOnePath = 'sounds/powerUp9.ogg';
+		const winPath = 'sounds/zapThreeToneUp.ogg';
+		let ref = this;
+		this.sounds = new Tone.Players({
+			'Got One': gotOnePath,
+			'Win': winPath
+		}, function(){
+			ref.soundsLoaded = true;
+		}).toMaster();
 	}
 
 	setMorse = (morse: string) => {
@@ -162,6 +177,33 @@ class TonePlayer {
 	setFrequency(frequency: number){
 		this.frequency = frequency;
 		this.synth.setNote(frequency);
+	}
+
+	playSound(name: string){
+		/*
+		try {
+			const filepath = `sounds/powerUp9.ogg`;
+			console.log(`Testing: ${filepath}`);
+
+			Filesystem.stat({
+			  path: filepath
+			}).then(function(data){
+				console.log('stat callback');
+				console.log(data);
+			})
+
+			console.log('made it to end of try block');
+		  } catch(e) {
+			console.error('Unable to stat file', e);
+		  }
+		*/
+
+		let SoundPlayer = this.sounds.get(name);
+		if (SoundPlayer && SoundPlayer.loaded){
+			SoundPlayer.start();
+		} else {
+			console.log(`${name} sound doesn't exist`);
+		}
 	}
 }
 
