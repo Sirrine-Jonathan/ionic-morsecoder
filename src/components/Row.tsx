@@ -1,4 +1,5 @@
 import React from 'react';
+import '../theme/style.scss';
 
 interface RowProps {
     justify?: string,
@@ -7,14 +8,8 @@ interface RowProps {
 
 const Row: React.FC<RowProps> = ({ justify, align, children }) => {
 
-    const style = {
-        display: 'flex',
-        justifyContent: justify,
-        alignItems: align
-    }
-
     return (
-        <div style={style}>
+        <div className="row">
             { children }
         </div>
     )

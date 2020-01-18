@@ -23,7 +23,7 @@ const PracticePage: React.FC = () => {
   const [text, setText] = useState('');
   const [needsRefresh, setNeedsRefresh] = useState(false);
   const { state, dispatch } = useContext(AppContext);
-  const sessionChallenges = useRef(getChallenges(state.difficulty, 1));
+  const sessionChallenges = useRef(getChallenges(state.difficulty, 10));
   const [challengeIndex, setChallengeIndex] = useState(sessionChallenges.current.length - 1);
 
   const tone = useRef<any>(new TonePlayer(

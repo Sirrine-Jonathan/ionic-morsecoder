@@ -41,22 +41,16 @@ const SymbolListItem: React.FC<SymbolListItemProps> = ({ symbol, className }) =>
     }, [isPlaying]);
 
     return (
-        <IonItem style={containerStyle} key={Math.random() * 999999999 } className="studyItem">
+        <IonItem 
+            key={Math.random() * 999999999 }
+            className="studyItem"
+            color="var(--ion-color-primary)"
+        >
             <IonText>{ symbol.toUpperCase() }</IonText>
-            <IonText style={morseStyle}>{ Dictionary.translate(symbol.toLowerCase()) }</IonText>
+            <IonText className="itemMorse">{ Dictionary.translate(symbol.toLowerCase()) }</IonText>
             <IonIcon slot="end" icon={(isPlaying) ? square:play} onClick={togglePlay} />
         </IonItem>
     )
-}
-
-const containerStyle = {
-    fontSize: '20px'
-}
-
-const morseStyle = { 
-    flex: 1, 
-    textAlign: 'center',
-    fontSize: '40px' 
 }
 
 export default SymbolListItem;

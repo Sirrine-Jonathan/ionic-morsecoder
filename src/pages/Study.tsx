@@ -1,14 +1,30 @@
-import { IonButtons, IonContent, IonHeader, IonIcon, IonItem, IonList, IonMenuButton, IonPage, IonTitle, IonToolbar, IonText } from '@ionic/react';
+import { IonButtons, IonContent, IonHeader, IonIcon, IonItem, IonList, IonMenuButton, IonPage, IonTitle, IonToolbar, IonText, IonRow } from '@ionic/react';
 import Dictionary from '../util/dictionary';
-import React from 'react';
+import React, { useState } from 'react';
 import SymbolListItem from '../components/SymbolListItem';
 import Header from '../components/Header';
 import '../theme/style.scss';
+import { square, play } from 'ionicons/icons';
 
 const ListPage: React.FC = () => {
+  const [playingAll, setPlayingAll] = useState(false);
+  
+  function togglePlayAll(){
+    setPlayingAll(!playingAll);
+  }
+
   return (
     <IonPage>
       <Header title="Study" showSettings={true} />
+      <div className="studyControls">
+        <IonText>Play All</IonText>
+        <IonIcon 
+          slot="end" 
+          icon={(playingAll) ? square:play} 
+          onClick={togglePlayAll} 
+          color="#000"
+        />
+      </div>
       <IonContent>
         <ListItems />
       </IonContent>
@@ -33,7 +49,7 @@ const ListItems = () => {
   items = items.concat(nonAlpha);
 
 
-  return <IonList>{items}</IonList>;
+  return <IonList className="studyList" lines="none">{items}</IonList>;
 };
 
 export default ListPage;

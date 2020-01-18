@@ -3,9 +3,55 @@
     src: url('../fonts/Ubuntu-Regular.ttf');
 }
 
+.row:first-of-type {
+    border-top: 0;
+}
+
+.row:last-of-type {
+    border-top: 2px;
+}
+
+.row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    height: 50vh;
+    border: 10px solid #fff;
+    padding: 10px 10px 10px 0;
+    border-bottom: 5px;
+}
+
+.homeIcon {
+    padding-left: 10px;
+    margin-right: -5px;
+}
+
+.studyList {
+    background-color: var(--ion-color-quaternary);
+}
+
 .studyItem {
     margin: 10px 6px;
-    background-color: var(--ion-color-secondary);
+    background-color: var(--ion-color-primary);
+    border-radius: 5px;
+    color: var(--ion-color-primary-contrast);
+    font-size: 20px;
+}
+
+.studyControls {
+    padding: 22px;
+    font-size: 24px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    background-color: var(--ion-color-tertiary);
+    color: var(--ion-color-tertiary-contrast);
+}
+
+.itemMorse { 
+    flex: 1; 
+    text-align: center;
+    font-size: 40px;
 }
 
 .answerPreview {
@@ -94,3 +140,4 @@
     align-items: center;
     padding: 10px;
 }
+

@@ -70,6 +70,7 @@ const HomePage: React.FC = () => {
   function changeEnglish(e: any){
     let english = Dictionary.translate(e.target.value);
     setCurrentMorse(english);
+    checkScroll();
   }
 
   function checkScroll(){
@@ -111,23 +112,27 @@ const HomePage: React.FC = () => {
           { 
             ((getTranslation() == "") ? 
             null:
-            (<IonIcon icon={(isPlayingBack) ? square:play} size="large" onClick={togglePlay}></IonIcon>)) 
+            (<IonIcon icon={(isPlayingBack) ? square:play} className="homeIcon" size="large" onClick={togglePlay}></IonIcon>)) 
           }
         </Row>
         <Row justify="space-between" align="center">
           <IonInput 
             id="morseInput"
             className="homeInput" 
-            value={ currentMorse }
+            value={ currentMorse.replace(new RegExp('[^. -]', "ig"), "") }
             onInput={(e: any) => {
-              setCurrentMorse(e.target.value);
+              let morseInputText = e.target.value;
+              let regexRestriction = new RegExp('[^. -]', "ig");
+              morseInputText = morseInputText.replace(regexRestriction, "");
+              setCurrentMorse(morseInputText);
+              checkScroll();
             }}
             placeholder="Morse"
           ></IonInput>
           { 
             ((currentMorse == "") ? 
             null:
-            (<IonIcon icon={close} style={{ fontSize: '35px'}}  onClick={eraseText}></IonIcon>)) 
+            (<IonIcon icon={close} size="large" className="homeIcon" onClick={eraseText}></IonIcon>)) 
           }
         </Row>
         <TimingTool 
