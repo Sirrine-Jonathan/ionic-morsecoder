@@ -40,6 +40,13 @@ const SettingsPage: React.FC = () => {
       }
       console.log('dark theme: ', themeDark);
     }
+
+    function changeDifficulty(e: any){
+      dispatch({
+        type: 'setDifficulty',
+        payload: e.target.value
+      })
+    }
     
     function changeSound(e: any){
       dispatch({
@@ -88,11 +95,6 @@ const SettingsPage: React.FC = () => {
     <IonPage>
       <Header title="Settings" showHome={true} />
       <IonContent>
-      <IonItemDivider>
-        <IonLabel>
-          Theme
-        </IonLabel>
-      </IonItemDivider>
       <IonItem>
         <IonLabel>Theme</IonLabel>
         <IonSelect onIonChange={changeTheme}>
@@ -100,11 +102,14 @@ const SettingsPage: React.FC = () => {
           <IonSelectOption value="dark">Dark</IonSelectOption>
         </IonSelect>
       </IonItem>
-      <IonItemDivider>
-        <IonLabel>
-          Tone Quality
-        </IonLabel>
-      </IonItemDivider>
+      <IonItem>
+        <IonLabel>Difficulty</IonLabel>
+        <IonSelect onIonChange={changeDifficulty}>
+          <IonSelectOption value="beginner">Beginner</IonSelectOption>
+          <IonSelectOption value="intermediate">Intermediate</IonSelectOption>
+          <IonSelectOption value="expert">Expert</IonSelectOption>
+        </IonSelect>
+      </IonItem>
         <div>
           <IonItem>
           <IonRange 

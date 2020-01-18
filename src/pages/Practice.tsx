@@ -7,7 +7,7 @@ import TimingTool from "../components/TimingTool";
 import EventfulButton from "../components/EventfulButton";
 import { keypad } from "ionicons/icons";
 import { AppContext } from "../State";
-import { getDrills } from '../util/drills';
+import { getDrill, getChallenges } from '../util/drills';
 import DrillCard from "../components/DrillCard";
 import Dictionary from "../util/dictionary";
 import '../theme/style.scss';
@@ -22,8 +22,10 @@ const PracticePage: React.FC = () => {
   const [drillIndex, setDrillIndex] = useState(0);
   const [text, setText] = useState('');
   const [needsRefresh, setNeedsRefresh] = useState(false);
-  const sessionDrills = useRef(getDrills());
   const { state, dispatch } = useContext(AppContext);
+  const sessionChallenges = useRef(getChallenges(state.difficulty, 1));
+  const [challengeIndex, setChallengeIndex] = useState(sessionChallenges.current.length - 1);
+
   const tone = useRef<any>(new TonePlayer(
     state.wpm,
     state.frequency,
@@ -43,32 +45,33 @@ const PracticePage: React.FC = () => {
     setTextWasCleared(false);
   }
 
-  function setNextIndex(){
-    
-  }
-
   function refreshFn(){
-    sessionDrills.current = getDrills();
-    setDrillIndex(sessionDrills.current.length - 1);
+    sessionChallenges.current = getChallenges(state.difficulty, 10);
+    setChallengeIndex(sessionChallenges.current.length - 1);
     setNeedsRefresh(false);
   }
 
   useEffect(function(){
-    if (sessionDrills.current && sessionDrills.current.length > 0){
-      let currentDrillString = sessionDrills.current[drillIndex].toLowerCase();
+    if (sessionChallenges.current && sessionChallenges.current.length > 0){
+      let currentDrill = sessionChallenges.current[challengeIndex];
+      let currentDrillString = currentDrill[drillIndex].toLowerCase();
       let currentString = Dictionary.interpret(currentMorse).toLowerCase();
       let index = currentString.search(currentDrillString);
       if (index >= 0){
-        sessionDrills.current.shift();
+        currentDrill.shift();
+        if (currentDrill.length === 0){
+          sessionChallenges.current.pop();
+          setChallengeIndex(challengeIndex - 1);
+        }
         setCurrentMorse('');
         tone.current.playSound('Got One');
       }
     } else {
       tone.current.playSound('Win');
-      setNeedsRefresh(true);
+      if (sessionChallenges.current.length == 0){
+        setNeedsRefresh(true);
+      }
     }
-
-
   }, [currentMorse, drillIndex]);
 
   function clear(){
@@ -89,7 +92,7 @@ const PracticePage: React.FC = () => {
             )
             :
             (
-              <ListCards drills={sessionDrills.current}/>
+              <ListChallenges challenges={sessionChallenges.current}/>
             )
           }
           <div className="drillsContainer">
@@ -125,5 +128,16 @@ const ListCards: React.FC<ListCardsProps> = ({ drills }) => {
   items = items;
   return (<div className="drillList" >{items}</div>);
 };
+
+interface ListChallengesProps {
+  challenges: string[][]
+}
+
+const ListChallenges: React.FC<ListChallengesProps> = ({ challenges }) => {
+  let items = challenges.map((each, index) => {
+    return <ListCards key={index} drills={each} />
+  })
+  return (<div className="challengeList">{items}</div>)
+}
 
 export default PracticePage;

@@ -23,10 +23,7 @@ import Row from '../components/Row';
 import { AppContext } from '../State';
 import { TonePlayer } from '../util/sound';
 
-const inputStyle = {
-  fontSize: '30px',
-  overflowX: 'scroll'
-}
+
 
 const HomePage: React.FC = () => {
 
@@ -106,7 +103,7 @@ const HomePage: React.FC = () => {
         <Row justify="space-between" align="center">
           <IonInput 
             id="alphaInput"
-            style={inputStyle} 
+            className="homeInput"
             value={ getTranslation() }
             onInput={changeEnglish}
             placeholder="English"
@@ -120,7 +117,7 @@ const HomePage: React.FC = () => {
         <Row justify="space-between" align="center">
           <IonInput 
             id="morseInput"
-            style={inputStyle} 
+            className="homeInput" 
             value={ currentMorse }
             onInput={(e: any) => {
               setCurrentMorse(e.target.value);

@@ -66,6 +66,11 @@
     flex-direction: column;
 }
 
+.homeInput {
+    font-size: 55px;
+    overflow-x: scroll;
+}
+
 .refreshBtn {
     margin: 0
 }
@@ -74,6 +79,10 @@
     display: flex;
     flex-wrap: wrap;
     padding: 5px;
+    border: 2px solid #fff;
+    border-radius: 3px;
+    margin: 5px 20px;
+    background-color: #fff;
 }
 
 .popupText {

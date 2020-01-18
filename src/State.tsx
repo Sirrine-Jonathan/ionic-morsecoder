@@ -17,7 +17,8 @@ interface AppContext {
     sound: boolean,
     frequency: number,
     wpm: number,
-    toneType: string
+    toneType: string,
+    difficulty: string
   }
 }
 
@@ -55,6 +56,10 @@ let reducer = (state: any, action: StateAction) => {
       return { ...state, toneType: action.payload }
       break;
     }
+    case "setDifficulty": {
+      return { ...state, difficulty: action.payload }
+      break;
+    }
     case "setAll": {
       return action.payload;
     }
@@ -82,6 +87,7 @@ function AppContextProvider(props: any) {
         frequency: state.frequency,
         wpm: state.wpm,
         toneType: state.toneType,
+        difficulty: state.difficulty
       }
       console.log('ready state', readyState);
       setItem(PERSISTANT, JSON.stringify(readyState));
