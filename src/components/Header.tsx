@@ -1,4 +1,4 @@
-import { IonHeader, IonToolbar, IonButtons, IonMenuButton, IonTitle, IonIcon, IonRouterLink, IonBackButton } from "@ionic/react";
+import { IonHeader, IonToolbar, IonButtons, IonMenuButton, IonTitle, IonIcon, IonRouterLink, IonBackButton, IonMenuToggle } from "@ionic/react";
 import React from "react";
 import '../theme/style.scss';
 import { settings, home } from "ionicons/icons";
@@ -24,39 +24,12 @@ const Header: React.FC<HeaderProps> = ({
                     <IonMenuButton />
                 </IonButtons>
                 <IonTitle className="title">{ title }</IonTitle>
-                { (showSettings) 
-                    ? 
-                    (
-                        <IonButtons
-                            slot="end"
-                            className="rightButtonContainer"
-                        >
-                            <IonRouterLink href="/home/settings">
-                                <IonIcon icon={settings} className="rightButton"></IonIcon>
-                            </IonRouterLink>
-                        </IonButtons>
-                    )
-                    :
-                    null 
-                }
-                { (showHome) 
-                    ? 
-                    (
-                        <IonButtons
-                            slot="end"
-                            className="rightButtonContainer"
-                        >
-                            <IonBackButton className="rightButton"/>
-                            {/*
-                            <IonRouterLink href="/home">
-                                <IonIcon icon={home} className="rightButton"></IonIcon>
-                            </IonRouterLink>
-                            */}
-                        </IonButtons>
-                    )
-                    :
-                    null 
-                }
+                <IonButtons
+                    slot="end"
+                    className="rightButtonContainer"
+                >
+                    <IonMenuToggle id="settings" />
+                </IonButtons>
             </IonToolbar>
         </IonHeader>
     )

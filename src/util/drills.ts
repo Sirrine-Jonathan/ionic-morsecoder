@@ -1,9 +1,9 @@
 
 const easyDrills = [
-    "A B C D",
+    "A B C D C D E F G H I J K L M N O P Q R S T U V W X Y Z",
     "Q F L Y",
     "M I T E",
-    "V J U W"
+    "V J U W",
 ]
 
 const intermediateDrills = [

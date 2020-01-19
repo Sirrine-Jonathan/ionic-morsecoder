@@ -20,7 +20,7 @@ interface MenuProps extends RouteComponentProps {
 }
 
 const Menu: React.FunctionComponent<MenuProps> = ({ appPages }) => (
-  <IonMenu contentId="main" type="overlay">
+  <IonMenu contentId="main" type="overlay" side="start">
     <IonHeader className="MenuHeader">
       <IonToolbar>
         <IonTitle>Menu</IonTitle>

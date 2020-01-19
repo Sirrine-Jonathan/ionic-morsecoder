@@ -1,17 +1,54 @@
 import { IonButtons, IonContent, IonHeader, IonIcon, IonItem, IonList, IonMenuButton, IonPage, IonTitle, IonToolbar, IonText, IonRow } from '@ionic/react';
 import Dictionary from '../util/dictionary';
-import React, { useState } from 'react';
+import React, { useState, useRef, useContext, useEffect } from 'react';
 import SymbolListItem from '../components/SymbolListItem';
 import Header from '../components/Header';
 import '../theme/style.scss';
 import { square, play } from 'ionicons/icons';
+import { TonePlayer } from '../util/sound';
+import { AppContext } from '../State';
 
 const ListPage: React.FC = () => {
   const [playingAll, setPlayingAll] = useState(false);
-  
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const { state, dispatch } = useContext(AppContext);
+  let symbolList = useRef(getSymbolList());
+  const didMount = useRef(false);
+  const tone = useRef<any>(new TonePlayer(
+    state.wpm,
+    state.frequency,
+    state.toneType
+  ));
+
   function togglePlayAll(){
-    setPlayingAll(!playingAll);
+    if (playingAll){
+      setPlayingAll(false);
+    } else {
+      setPlayingAll(true);
+    }
   }
+
+  useEffect(() => {
+    if (didMount.current){
+        if (playingAll){
+            tone.current.setMorse(Dictionary.translate(
+              symbolList.current[currentIndex]
+            ));
+            tone.current.play(function(){
+              if (currentIndex + 1 >= symbolList.current.length){
+                setCurrentIndex(0);
+                setPlayingAll(false);
+              } else {
+                setCurrentIndex(currentIndex + 1);
+              }
+            });
+        } else {
+            tone.current.stop();
+        }
+    } else {
+        didMount.current = true;
+    }
+  }, [playingAll, currentIndex]);
 
   return (
     <IonPage>
@@ -26,28 +63,42 @@ const ListPage: React.FC = () => {
         />
       </div>
       <IonContent>
-        <ListItems />
+        <ListItems curIndex={currentIndex}/>
       </IonContent>
     </IonPage>
   );
 };
 
-const ListItems = () => {
-
+function getSymbolList(){
   let dictionaryArr = Dictionary.getKeyArray();
   let dictionary = dictionaryArr.sort();
   let nonAlpha: any[] = [];
-  let items = dictionary.map((each, index) => {
-    if (each == " ") return false;
+  let items = dictionary.filter((each, index) => {
+    if (each == " ") return null;
     let alphareg = new RegExp(/^[a-zA-Z]+$/);
     if (!each.match(alphareg)){
-      nonAlpha.push(<SymbolListItem symbol={each} key={index}/>);
-      return false;
+      nonAlpha.push(each);
+      return null;
     }
-    return (<SymbolListItem className="studyItem" symbol={each} key={index}/>);
+    return each;
   });
   items = items.concat(nonAlpha);
+  return items;
+}
 
+interface StudyItemsProps {
+  curIndex: number
+}
+
+const ListItems: React.FC<StudyItemsProps> = ({ curIndex }) => {
+
+  let items = getSymbolList().map((each, index) => {
+    if (index === curIndex){
+      return (<SymbolListItem className="studyItem studyItemPlaying" symbol={each} key={index}/>);
+    } else {
+      return (<SymbolListItem className="studyItem" symbol={each} key={index}/>);
+    }
+  });
 
   return <IonList className="studyList" lines="none">{items}</IonList>;
 };

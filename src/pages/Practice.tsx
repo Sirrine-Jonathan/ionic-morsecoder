@@ -78,6 +78,14 @@ const PracticePage: React.FC = () => {
     setCurrentMorse('');
   }
 
+  function skipChallenge(){
+    sessionChallenges.current.pop();
+    setChallengeIndex(challengeIndex - 1);
+    if (sessionChallenges.current.length == 0){
+      setNeedsRefresh(true);
+    }
+  }
+
   return (
       <IonPage>
         <Header title="Practice" showSettings={true} />
@@ -92,9 +100,15 @@ const PracticePage: React.FC = () => {
             )
             :
             (
-              <ListChallenges challenges={sessionChallenges.current}/>
+              <>
+                <ListChallenges challenges={sessionChallenges.current}/>
+                <IonButton className="challengeSkipBtn" onClick={skipChallenge}>
+                  Skip
+                </IonButton>
+              </>
             )
           }
+          
           <div className="drillsContainer">
           <IonText className="answerPreview">{Dictionary.interpret(currentMorse)}</IonText>
           <TimingTool 
@@ -118,7 +132,7 @@ const PracticePage: React.FC = () => {
 }
 
 interface ListCardsProps {
-  drills: string[]
+  drills: string[],
 }
 
 const ListCards: React.FC<ListCardsProps> = ({ drills }) => {
@@ -126,7 +140,11 @@ const ListCards: React.FC<ListCardsProps> = ({ drills }) => {
     return (<DrillCard title={each} key={index}/>);
   });
   items = items;
-  return (<div className="drillList" >{items}</div>);
+  return (
+    <div className="drillList" >
+      {items}
+    </div>
+  );
 };
 
 interface ListChallengesProps {
@@ -137,7 +155,11 @@ const ListChallenges: React.FC<ListChallengesProps> = ({ challenges }) => {
   let items = challenges.map((each, index) => {
     return <ListCards key={index} drills={each} />
   })
-  return (<div className="challengeList">{items}</div>)
+  return (
+    <div className="challengeList">
+      {items}
+    </div>
+  )
 }
 
 export default PracticePage;

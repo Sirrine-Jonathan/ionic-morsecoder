@@ -5,6 +5,8 @@ import { IonReactRouter } from '@ionic/react-router';
 import { AppPage } from './declarations';
 
 import Menu from './components/Menu';
+import SettingsMenu from './components/SettingsMenu';
+import Tabs from './components/Tabs';
 import Home from './pages/Home';
 import Practice from './pages/Practice';
 import Study from './pages/Study';
@@ -59,12 +61,27 @@ const appPages: AppPage[] = [
   }
 ];
 
-const App: React.FC = () => (
-  <AppContextProvider>
-  <IonApp>
-    <IonReactRouter>
-      <IonSplitPane contentId="main">
-        <Menu appPages={appPages} />
+const App: React.FC = () => {
+  // Use matchMedia to check the user preference
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+
+  toggleDarkTheme(prefersDark.matches);
+
+  // Listen for changes to the prefers-color-scheme media query
+  prefersDark.addListener((mediaQuery) => toggleDarkTheme(mediaQuery.matches));
+
+  // Add or remove the "dark" class based on if the media query matches
+  function toggleDarkTheme(shouldAdd: boolean) {
+    document.body.classList.toggle('dark', shouldAdd);
+  }
+
+  return (
+    <AppContextProvider>
+    <IonApp>
+      <IonReactRouter>
+        <Menu appPages={appPages}/>
+        
+        <SettingsMenu />
         <IonRouterOutlet id="main">
           <Route path="/home" component={Home} exact={true} />
           <Route path="/home/study" component={Study} exact={true} />
@@ -72,10 +89,10 @@ const App: React.FC = () => (
           <Route path="/home/settings" component={Settings} exact={true} />
           <Route path="/" render={() => <Redirect to="/home"/> } exact={true} />
         </IonRouterOutlet>
-      </IonSplitPane>
-    </IonReactRouter>
-  </IonApp>
-  </AppContextProvider>
-);
+      </IonReactRouter>
+    </IonApp>
+    </AppContextProvider>
+  );
+}
 
 export default App;

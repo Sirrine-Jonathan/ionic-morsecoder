@@ -115,7 +115,7 @@ const HomePage: React.FC = () => {
             (<IonIcon icon={(isPlayingBack) ? square:play} className="homeIcon" size="large" onClick={togglePlay}></IonIcon>)) 
           }
         </Row>
-        <Row justify="space-between" align="center">
+        <Row justify="space-between" align="center" >
           <IonInput 
             id="morseInput"
             className="homeInput" 
