@@ -26,7 +26,7 @@ const Menu: React.FunctionComponent<MenuProps> = ({ appPages }) => (
         <IonTitle>Menu</IonTitle>
       </IonToolbar>
     </IonHeader>
-    <IonContent id="mainMenu" className="MenuBody">
+    <IonContent className="MenuBody" onIonScroll={() => console.log('dragging main')}>
       <IonList>
         {appPages.map((appPage, index) => {
           return (

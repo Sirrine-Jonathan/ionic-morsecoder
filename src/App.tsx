@@ -10,8 +10,8 @@ import Tabs from './components/Tabs';
 import Home from './pages/Home';
 import Practice from './pages/Practice';
 import Study from './pages/Study';
-import Settings from './pages/Settings';
-import { home, book, school, settings } from 'ionicons/icons';
+import Train from './pages/Train';
+import { home, book, school, settings, fitness } from 'ionicons/icons';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -53,16 +53,16 @@ const appPages: AppPage[] = [
     title: 'Practice',
     url: '/home/practice',
     icon: school
-  },
+  }, 
   {
-    title: 'Settings',
-    url: '/home/settings',
-    icon: settings
+    title: 'Train',
+    url: '/home/train',
+    icon: fitness
   }
 ];
 
 const App: React.FC = () => {
-  
+
   // Use matchMedia to check the user preference
   const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
 
@@ -86,7 +86,7 @@ const App: React.FC = () => {
           <Route path="/home" component={Home} exact={true} />
           <Route path="/home/study" component={Study} exact={true} />
           <Route path="/home/practice" component={Practice} exact={true} />
-          <Route path="/home/settings" component={Settings} exact={true} />
+          <Route path="/home/train" component={Train} exact={true} />
           <Route path="/" render={() => <Redirect to="/home"/> } exact={true} />
         </IonRouterOutlet>
       </IonReactRouter>

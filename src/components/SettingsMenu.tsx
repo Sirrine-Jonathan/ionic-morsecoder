@@ -132,7 +132,7 @@ import '../theme/style.scss';
           <IonTitle>Settings</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <IonContent id="settingsMenu" className="MenuBody">
+      <IonContent className="MenuBody" onClick={() => {console.log("touch")}}>
       <IonItem>
         <IonLabel>Theme</IonLabel>
         <IonSelect onIonChange={changeTheme}>
