@@ -31,20 +31,12 @@ const TimingTool: React.FunctionComponent<TimingToolProps> = ({
   const previousButtonState = useRef(buttonPressed);
   const started = useRef(false);
 
-  // the 6 and 14 comes from the total units that
-  // make sense for each segment. A tone should only last
-  // 3 units so we allow double that for the timing tool. 
-  // this way a use should know to release the key in the 
-  // second half of the timing bar so as to create a dash
-  // since the longest time the button should remain unpressed
-  // is 7, to emit a word space, we allow double that for 
-  // the silent bar
   let soundPercent = (buttonPressed) ? getPercent(4):0;
   let silentPercent = (buttonPressed) ? 0:getPercent(8);
 
-  // this function returns the percentage 
-  // of the current time since the button was last pressed or
-  // released of a total unit.
+  // this function returns the percentage of alotted
+  // time since the button was last pressed or released.
+  // alotted times should always be a multiple of the base unit
   function getPercent(multiplier: number = 1){
     return time / ((baseUnit * multiplier));
   }

@@ -25,7 +25,7 @@ import {
   import './Menu.scss';
 import { square, play } from 'ionicons/icons';
 import { AppContext } from '../State';
-import { TonePlayer } from '../util/sound';
+import { TonePlayer, GlobalPlayer } from '../util/sound';
 import '../theme/style.scss';
   
 
@@ -37,11 +37,7 @@ import '../theme/style.scss';
     const [gainNode, setGainNode] = useState();
     const [isPlaying, setIsPlaying] = useState(false);
     const { state, dispatch } = useContext(AppContext);
-    const tone = useRef<any>(new TonePlayer(
-      state.wpm,
-      state.frequency,
-      state.toneType
-    ));
+    const tone = useRef<any>(GlobalPlayer);
 
     const min = useRef(200);
     const max = useRef(1000);
@@ -130,13 +126,13 @@ import '../theme/style.scss';
     });
     
     return (
-    <IonMenu contentId="settings" type="overlay" side="end">
+    <IonMenu menuId="settings" contentId="settingsMenu" type="overlay" side="end">
       <IonHeader className="MenuHeader">
         <IonToolbar>
           <IonTitle>Settings</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <IonContent className="MenuBody">
+      <IonContent id="settingsMenu" className="MenuBody">
       <IonItem>
         <IonLabel>Theme</IonLabel>
         <IonSelect onIonChange={changeTheme}>

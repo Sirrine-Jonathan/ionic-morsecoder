@@ -5,7 +5,7 @@ import SymbolListItem from '../components/SymbolListItem';
 import Header from '../components/Header';
 import '../theme/style.scss';
 import { square, play } from 'ionicons/icons';
-import { TonePlayer } from '../util/sound';
+import { TonePlayer, GlobalPlayer } from '../util/sound';
 import { AppContext } from '../State';
 
 const ListPage: React.FC = () => {
@@ -14,11 +14,7 @@ const ListPage: React.FC = () => {
   const { state, dispatch } = useContext(AppContext);
   let symbolList = useRef(getSymbolList());
   const didMount = useRef(false);
-  const tone = useRef<any>(new TonePlayer(
-    state.wpm,
-    state.frequency,
-    state.toneType
-  ));
+  const tone = useRef<any>(GlobalPlayer);
 
   function togglePlayAll(){
     if (playingAll){

@@ -5,7 +5,7 @@ import { AppContext } from '../State';
 import {
   Plugins,
 } from '@capacitor/core';
-import { TonePlayer } from '../util/sound';
+import { TonePlayer, GlobalPlayer } from '../util/sound';
 const { Haptics } = Plugins;
 
 type EventCallback = () => any;
@@ -19,20 +19,14 @@ const EventfulButton: React.FC<EventfulButtonProps> = ({ onPress, onRelease, chi
 
   const [isPressed, setIsPressed] = useState(false);
   const { state, dispatch } = useContext(AppContext);
-  const tone = useRef<any>(new TonePlayer(
-    state.wpm,
-    state.frequency,
-    state.toneType
-  ));
+  const tone = useRef<any>(GlobalPlayer);
 
-  function startOsc(frequency: number){
+  function startOsc(){
     tone.current.startTone();
-    //Haptics.selectionStart();
   };
 
   function off() {
     tone.current.stopTone();
-    //Haptics.selectionEnd();
   }
 
   let classname = "";
@@ -49,7 +43,7 @@ const EventfulButton: React.FC<EventfulButtonProps> = ({ onPress, onRelease, chi
         onTouchStart={() => {
           onPress(); 
           setIsPressed(true);
-          startOsc(440);
+          startOsc();
         }}
         onTouchEnd={() => {
           onRelease(); 

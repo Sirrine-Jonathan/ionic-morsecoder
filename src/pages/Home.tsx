@@ -21,7 +21,7 @@ import Dictionary from '../util/dictionary';
 import '../theme/style.scss';
 import Row from '../components/Row';
 import { AppContext } from '../State';
-import { TonePlayer } from '../util/sound';
+import { TonePlayer, GlobalPlayer } from '../util/sound';
 
 
 
@@ -33,11 +33,7 @@ const HomePage: React.FC = () => {
   const [textWasCleared, setTextWasCleared] = useState(true);
   const { state, dispatch } = useContext(AppContext);
   const didMount = useRef(false);
-  const tone = useRef<any>(new TonePlayer(
-      state.wpm,
-      state.frequency,
-      state.toneType
-  ));
+  const tone = useRef<any>(GlobalPlayer);
 
   // returns dot duration in milliseconds
   function getBasicUnit(){

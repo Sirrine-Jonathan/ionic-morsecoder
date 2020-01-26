@@ -21,14 +21,18 @@ const Header: React.FC<HeaderProps> = ({
                     slot="start"
                     className="menuButtonContainer"
                 >
-                    <IonMenuButton />
+                    <IonMenuToggle menu="main" autoHide={false}>
+                        <IonIcon icon={home} />
+                    </IonMenuToggle>
                 </IonButtons>
                 <IonTitle className="title">{ title }</IonTitle>
                 <IonButtons
                     slot="end"
                     className="rightButtonContainer"
                 >
-                    <IonMenuToggle id="settings" />
+                    <IonMenuToggle menu="settings" autoHide={false}>
+                        <IonIcon icon={settings} />
+                    </IonMenuToggle>
                 </IonButtons>
             </IonToolbar>
         </IonHeader>

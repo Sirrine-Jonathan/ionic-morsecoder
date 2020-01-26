@@ -8,32 +8,18 @@ class TonePlayer {
 	LETTER_SPACE = '#';
 	SYMBOL_SPACE = '@';
 
-	wpm: number;
-	frequency: number;
-	baseUnit: number;
+	wpm: number = 15;
+	frequency: number = 440;
+	baseUnit: number = this.getBaseUnit(this.wpm);
 	isPlaying: boolean = false;
 	symbols: string[] = [];
-	synth: Tone.Synth;
+	synth: Tone.Synth = new Tone.Synth();
 	totalUnitsUsed: number = 0;
 	sounds: Tone.Players;
 	soundsLoaded: boolean = false;
 
 	constructor(wpm: number, frequency: number, toneType: string){
-		this.wpm = wpm;
-		this.frequency = frequency;
-		this.baseUnit = this.getBaseUnit(this.wpm);
-		this.synth = new Tone.Synth({
-			oscillator: {
-				type: toneType as any
-			},
-			envelope: {
-				attack : 0.005 ,
-				decay : 0.005 ,
-				sustain : 1 ,
-				release : 0.005
-			}
-		}).toMaster();
-		Tone.Transport.start(0);
+		this.sync(wpm, frequency, toneType);
 
 		// load game sounds
 		const gotOnePath = 'sounds/powerUp9.ogg';
@@ -45,6 +31,24 @@ class TonePlayer {
 		}, function(){
 			ref.soundsLoaded = true;
 		}).toMaster();
+	}
+
+	sync = (wpm: number, frequency: number, toneType: string) => {
+		this.wpm = wpm;
+		this.frequency = frequency;
+		this.baseUnit = this.getBaseUnit(this.wpm);
+		this.synth = new Tone.Synth({
+			oscillator: {
+				type: toneType as any
+			},
+			envelope: {
+				attack : 0.01 ,
+				decay : 0.01 ,
+				sustain : 1 ,
+				release : 0.01
+			}
+		}).toMaster();
+		Tone.Transport.start(0);
 	}
 
 	setMorse = (morse: string) => {
@@ -118,6 +122,8 @@ class TonePlayer {
 		Tone.Transport.start(time);
 	}
 
+
+
 	pause = () => {
 		Tone.Transport.pause();
 	}
@@ -180,24 +186,15 @@ class TonePlayer {
 	}
 
 	playSound(name: string){
-		/*
-		try {
-			const filepath = `sounds/powerUp9.ogg`;
-			console.log(`Testing: ${filepath}`);
+		let SoundPlayer = this.sounds.get(name);
+		if (SoundPlayer && SoundPlayer.loaded){
+			SoundPlayer.start();
+		} else {
+			console.log(`${name} sound doesn't exist`);
+		}
+	}
 
-			Filesystem.stat({
-			  path: filepath
-			}).then(function(data){
-				console.log('stat callback');
-				console.log(data);
-			})
-
-			console.log('made it to end of try block');
-		  } catch(e) {
-			console.error('Unable to stat file', e);
-		  }
-		*/
-
+	async playSoundAsync(name: string){
 		let SoundPlayer = this.sounds.get(name);
 		if (SoundPlayer && SoundPlayer.loaded){
 			SoundPlayer.start();
@@ -207,6 +204,13 @@ class TonePlayer {
 	}
 }
 
+let GlobalPlayer = new TonePlayer(
+	15,
+	440,
+	'sine'
+);
+
 export { 
-	TonePlayer
+	TonePlayer,
+	GlobalPlayer
 };

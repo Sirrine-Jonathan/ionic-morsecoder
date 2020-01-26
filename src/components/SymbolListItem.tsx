@@ -3,7 +3,7 @@ import { IonItem, IonText, IonIcon } from "@ionic/react";
 import Dictionary from '../util/dictionary';
 import { attachProps } from "@ionic/react/dist/types/components/utils";
 import { play, square } from "ionicons/icons";
-import { TonePlayer } from '../util/sound';
+import { TonePlayer, GlobalPlayer } from '../util/sound';
 import { AppContext } from "../State";
 
 type SymbolListItemProps = {
@@ -15,11 +15,7 @@ const SymbolListItem: React.FC<SymbolListItemProps> = ({ symbol, className }) =>
     let [isPlaying, setIsPlaying] = useState(false);
     const { state, dispatch } = useContext(AppContext);
     const didMount = useRef(false);
-    const tone = useRef<any>(new TonePlayer(
-        state.wpm,
-        state.frequency,
-        state.toneType
-    ));
+    const tone = useRef<any>(GlobalPlayer);
 
     const togglePlay = () => {
         setIsPlaying(!isPlaying);

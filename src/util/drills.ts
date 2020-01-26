@@ -1,6 +1,6 @@
 
 const easyDrills = [
-    "A B C D C D E F G H I J K L M N O P Q R S T U V W X Y Z",
+    "A B C D",
     "Q F L Y",
     "M I T E",
     "V J U W",
@@ -63,6 +63,8 @@ function getChallenges(difficulty: string, amount: number){
         challenges.push(nextDrill);
         ind++;
     }
+    console.log(challenges);
+    //return [['a']];
     return challenges;
 }
 

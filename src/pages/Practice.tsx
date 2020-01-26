@@ -11,7 +11,7 @@ import { getDrill, getChallenges } from '../util/drills';
 import DrillCard from "../components/DrillCard";
 import Dictionary from "../util/dictionary";
 import '../theme/style.scss';
-import { TonePlayer } from "../util/sound";
+import { TonePlayer, GlobalPlayer } from "../util/sound";
 import { refresh } from 'ionicons/icons';
 
 const PracticePage: React.FC = () => {
@@ -23,14 +23,13 @@ const PracticePage: React.FC = () => {
   const [text, setText] = useState('');
   const [needsRefresh, setNeedsRefresh] = useState(false);
   const { state, dispatch } = useContext(AppContext);
-  const sessionChallenges = useRef(getChallenges(state.difficulty, 10));
-  const [challengeIndex, setChallengeIndex] = useState(sessionChallenges.current.length - 1);
+  const [ sessionChallenges, setSessionChallenges ] = useState(() => {
+    console.log('resetting state?');
+    return getChallenges(state.difficulty, 2); 
+  });
+  const [challengeIndex, setChallengeIndex] = useState(sessionChallenges.length - 1);
 
-  const tone = useRef<any>(new TonePlayer(
-    state.wpm,
-    state.frequency,
-    state.toneType
-  ));
+  const tone = useRef<any>(GlobalPlayer);
 
   // returns dot duration in milliseconds
   function getBasicUnit(){
@@ -46,46 +45,50 @@ const PracticePage: React.FC = () => {
   }
 
   function refreshFn(){
-    sessionChallenges.current = getChallenges(state.difficulty, 10);
-    setChallengeIndex(sessionChallenges.current.length - 1);
+    console.log('refreshing');
+    let newChallenges = getChallenges(state.difficulty, 1);
+    setSessionChallenges(newChallenges);
+    setChallengeIndex(newChallenges.length - 1);
     setNeedsRefresh(false);
   }
-
+  
   useEffect(function(){
-    if (sessionChallenges.current && sessionChallenges.current.length > 0){
-      let currentDrill = sessionChallenges.current[challengeIndex];
+    if (sessionChallenges && sessionChallenges.length > 0){
+      let currentDrill = sessionChallenges[challengeIndex];
       let currentDrillString = currentDrill[drillIndex].toLowerCase();
       let currentString = Dictionary.interpret(currentMorse).toLowerCase();
       let index = currentString.search(currentDrillString);
       if (index >= 0){
         currentDrill.shift();
         if (currentDrill.length === 0){
-          sessionChallenges.current.pop();
+          sessionChallenges.pop();
           setChallengeIndex(challengeIndex - 1);
         }
         setCurrentMorse('');
-        tone.current.playSound('Got One');
       }
     } else {
-      tone.current.playSound('Win');
-      if (sessionChallenges.current.length == 0){
+      if (sessionChallenges.length == 0){
         setNeedsRefresh(true);
       }
     }
   }, [currentMorse, drillIndex]);
+  
 
   function clear(){
     setCurrentMorse('');
   }
 
   function skipChallenge(){
-    sessionChallenges.current.pop();
+    refreshFn();
+    /*
+    sessionChallenges.pop();
     setChallengeIndex(challengeIndex - 1);
-    if (sessionChallenges.current.length == 0){
+    if (sessionChallenges.length == 0){
       setNeedsRefresh(true);
     }
+    */
   }
-
+  console.log('PracticePage Refreshing');
   return (
       <IonPage>
         <Header title="Practice" showSettings={true} />
@@ -94,14 +97,14 @@ const PracticePage: React.FC = () => {
             (
               <div className="refresh" onClick={refreshFn}>
                 <IonButton  slot="center" className="refreshBtn">
-                  <IonIcon slot="icon-only" icon={refresh} />
+                  Play Again  <IonIcon icon={refresh} />
                 </IonButton>
               </div>
             )
             :
             (
               <>
-                <ListChallenges challenges={sessionChallenges.current}/>
+                <ListChallenges challenges={sessionChallenges}/>
                 <IonButton className="challengeSkipBtn" onClick={skipChallenge}>
                   Skip
                 </IonButton>

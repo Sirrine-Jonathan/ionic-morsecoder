@@ -62,6 +62,7 @@ const appPages: AppPage[] = [
 ];
 
 const App: React.FC = () => {
+  
   // Use matchMedia to check the user preference
   const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
 
@@ -80,7 +81,6 @@ const App: React.FC = () => {
     <IonApp>
       <IonReactRouter>
         <Menu appPages={appPages}/>
-        
         <SettingsMenu />
         <IonRouterOutlet id="main">
           <Route path="/home" component={Home} exact={true} />
