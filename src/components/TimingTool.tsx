@@ -39,7 +39,7 @@ const TimingTool: React.FunctionComponent<TimingToolProps> = ({
   // alotted times should always be a multiple of the base unit
   function getPercent(multiplier: number = 1){
     return time / ((baseUnit * multiplier));
-  }
+  } 
 
   function keepTime(timestamp: number){
     if (previousTimeRef.current !== undefined){

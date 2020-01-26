@@ -13,8 +13,11 @@ import Dictionary from "../util/dictionary";
 import '../theme/style.scss';
 import { TonePlayer, GlobalPlayer } from "../util/sound";
 import { refresh } from 'ionicons/icons';
+import Challenges from "../components/Challenges";
 
 const PracticePage: React.FC = () => {
+
+  let numberOfChallenges: number = 1;
 
   const [isPushed, setIsPushed] = useState(false);
   const [currentMorse, setCurrentMorse] = useState("");
@@ -24,8 +27,9 @@ const PracticePage: React.FC = () => {
   const [needsRefresh, setNeedsRefresh] = useState(false);
   const { state, dispatch } = useContext(AppContext);
   const [ sessionChallenges, setSessionChallenges ] = useState(() => {
-    console.log('resetting state?');
-    return getChallenges(state.difficulty, 2); 
+    console.log('difficulty', state.difficulty);
+    console.log('state', state);
+    return getChallenges(state.difficulty, numberOfChallenges); 
   });
   const [challengeIndex, setChallengeIndex] = useState(sessionChallenges.length - 1);
 
@@ -45,8 +49,7 @@ const PracticePage: React.FC = () => {
   }
 
   function refreshFn(){
-    console.log('refreshing');
-    let newChallenges = getChallenges(state.difficulty, 1);
+    let newChallenges = getChallenges(state.difficulty, numberOfChallenges);
     setSessionChallenges(newChallenges);
     setChallengeIndex(newChallenges.length - 1);
     setNeedsRefresh(false);
@@ -68,7 +71,8 @@ const PracticePage: React.FC = () => {
       }
     } else {
       if (sessionChallenges.length == 0){
-        setNeedsRefresh(true);
+        refreshFn();
+        //setNeedsRefresh(true);
       }
     }
   }, [currentMorse, drillIndex]);
@@ -80,15 +84,8 @@ const PracticePage: React.FC = () => {
 
   function skipChallenge(){
     refreshFn();
-    /*
-    sessionChallenges.pop();
-    setChallengeIndex(challengeIndex - 1);
-    if (sessionChallenges.length == 0){
-      setNeedsRefresh(true);
-    }
-    */
   }
-  console.log('PracticePage Refreshing');
+
   return (
       <IonPage>
         <Header title="Practice" showSettings={true} />
@@ -104,7 +101,7 @@ const PracticePage: React.FC = () => {
             :
             (
               <>
-                <ListChallenges challenges={sessionChallenges}/>
+                <Challenges challenges={sessionChallenges}/>
                 <IonButton className="challengeSkipBtn" onClick={skipChallenge}>
                   Skip
                 </IonButton>
@@ -132,37 +129,6 @@ const PracticePage: React.FC = () => {
         </div>
       </IonPage>
   );
-}
-
-interface ListCardsProps {
-  drills: string[],
-}
-
-const ListCards: React.FC<ListCardsProps> = ({ drills }) => {
-  let items = drills.map((each, index) => {
-    return (<DrillCard title={each} key={index}/>);
-  });
-  items = items;
-  return (
-    <div className="drillList" >
-      {items}
-    </div>
-  );
-};
-
-interface ListChallengesProps {
-  challenges: string[][]
-}
-
-const ListChallenges: React.FC<ListChallengesProps> = ({ challenges }) => {
-  let items = challenges.map((each, index) => {
-    return <ListCards key={index} drills={each} />
-  })
-  return (
-    <div className="challengeList">
-      {items}
-    </div>
-  )
 }
 
 export default PracticePage;

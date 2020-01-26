@@ -165,8 +165,24 @@ button.eventful-unpressed {
     margin: 8px;
     width: auto;
     align-self: flex-end;
+    position: absolute;
+    z-index: 2;
+    bottom: 190px;
+    right: 4px;
 }
 
 .challengeList {
     overflow-y: scroll;
+}
+
+.MenuHeader .in-toolbar {
+    --background: var(--ion-color-primary);
+    --color: var(--ion-color-primary-contrast);
+}
+
+.MenuBody, .MenuBody .item-interactive, .MenuBody .item, .MenuBody .list-md  {
+    --background: var(--ion-color-dark);
+    --color: var(--ion-color-dark-contrast);
+    background: var(--ion-color-dark);
+    color: var(--ion-color-dark-contrast);
 }

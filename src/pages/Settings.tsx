@@ -95,6 +95,7 @@ const SettingsPage: React.FC = () => {
     <IonPage>
       <Header title="Settings" showHome={true} />
       <IonContent>
+        {/*
       <IonItem>
         <IonLabel>Theme</IonLabel>
         <IonSelect onIonChange={changeTheme}>
@@ -102,6 +103,7 @@ const SettingsPage: React.FC = () => {
           <IonSelectOption value="dark">Dark</IonSelectOption>
         </IonSelect>
       </IonItem>
+        */}
       <IonItem>
         <IonLabel>Difficulty</IonLabel>
         <IonSelect onIonChange={changeDifficulty}>

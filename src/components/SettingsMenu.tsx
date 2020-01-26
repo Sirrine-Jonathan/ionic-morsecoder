@@ -98,7 +98,8 @@ import '../theme/style.scss';
     }
 
     useEffect(() => {
-      console.log('useEffect Settings', state);
+      // set input defaults here
+      
     }, [state]);
 
     useEffect(() => {
@@ -127,19 +128,19 @@ import '../theme/style.scss';
     
     return (
     <IonMenu menuId="settings" contentId="settingsMenu" type="overlay" side="end">
-      <IonHeader className="MenuHeader">
+      <IonHeader className="MenuHeader ">
         <IonToolbar>
           <IonTitle>Settings</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent className="MenuBody" onClick={() => {console.log("touch")}}>
-      <IonItem>
+      {/* <IonItem>
         <IonLabel>Theme</IonLabel>
         <IonSelect onIonChange={changeTheme}>
           <IonSelectOption value="light">Light</IonSelectOption>
           <IonSelectOption value="dark">Dark</IonSelectOption>
         </IonSelect>
-      </IonItem>
+      </IonItem> */}
       <IonItem>
         <IonLabel>Difficulty</IonLabel>
         <IonSelect onIonChange={changeDifficulty}>

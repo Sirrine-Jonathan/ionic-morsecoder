@@ -14,8 +14,10 @@ const intermediateDrills = [
 ];
 
 const expertDrills = [
-    "The quick brown fox jumps over a lazy dog",
-    "Pack my box with five dozen liquor jugs",
+    "The quick brown fox",
+    "jumps over a lazy dog",
+    "Pack my box with",
+    "five dozen liquor jugs",
     "How quickly daft jumping zebras vex",
     "TV quiz drag nymphs blew JFK cox"
 ];
