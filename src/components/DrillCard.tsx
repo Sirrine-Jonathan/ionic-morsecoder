@@ -1,7 +1,7 @@
 import { IonCard, IonText, IonPopover, IonIcon } from "@ionic/react";
 import React, { useState, useContext, useRef, useEffect } from "react";
 import Dictionary from './../util/dictionary';
-import './DrillCard.scss';
+import '../theme/style.scss';
 import { square, play } from "ionicons/icons";
 import { AppContext } from "../State";
 import { TonePlayer } from "../util/sound";

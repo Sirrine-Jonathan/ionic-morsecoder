@@ -18,12 +18,15 @@ import {
     useIonViewDidEnter,
     useIonViewWillEnter,
     useIonViewWillLeave,
+    IonRadioGroup,
+    IonListHeader,
+    IonRadio,
   } from '@ionic/react';
   import React, { useState, useContext, useRef, useEffect } from 'react';
   import { RouteComponentProps, withRouter } from 'react-router-dom';
   import { AppPage } from '../declarations';
   import './Menu.scss';
-import { square, play } from 'ionicons/icons';
+import { square, play, pulse, speedometer } from 'ionicons/icons';
 import { AppContext } from '../State';
 import { TonePlayer, GlobalPlayer } from '../util/sound';
 import '../theme/style.scss';
@@ -39,24 +42,25 @@ import '../theme/style.scss';
     const { state, dispatch } = useContext(AppContext);
     const tone = useRef<any>(GlobalPlayer);
 
+    const PIN_STYLE = "white-space:nowrap;padding: 13px 34px 12px;display: flex;flex-direction: column;justify-content: center;align-items: center;font-size: 15px;transform: translate(-16px,-25px);border-radius: 5px;";
+
     const min = useRef(200);
     const max = useRef(1000);
 
+    const minWpm = useRef(5);
+    const maxWpm = useRef(25);
+
     function changeFrequency(e: any){
+      let frequency = e.target.value;
+      let rangePin = e.target.shadowRoot.querySelector('.range-pin');
+      rangePin.style = PIN_STYLE;
+      rangePin.innerHTML = "<div>" + frequency + " Hz</div>";
+
       dispatch({ type: "setFrequency", payload: e.target.value });
       tone.current.setFrequency(e.target.value);
       if (oscillator){
         oscillator.frequency.setValueAtTime(e.target.value, context.currentTime);
       }
-    }
-
-    function changeTheme(e: any){
-      let themeDark = 'false';
-      console.log('dark toggle checked: ', e.target.checked);
-      if (e.target.checked){
-        themeDark = 'true';
-      }
-      console.log('dark theme: ', themeDark);
     }
 
     function changeDifficulty(e: any){
@@ -80,7 +84,7 @@ import '../theme/style.scss';
       })
     }
 
-    function toneChange(e: any){
+    function changeTone(e: any){
       dispatch({
         type: 'setToneType',
         payload: e.target.value
@@ -89,18 +93,22 @@ import '../theme/style.scss';
     }
 
     function wpmChange(e: any){
-      console.log('wpmChange');
+      let wpm = e.target.value;
+      let rangePin = e.target.shadowRoot.querySelector('.range-pin');
+      rangePin.style = PIN_STYLE;
+      rangePin.innerHTML = "<div style=''>" + wpm + " wpm</div>";
       dispatch({
         type: 'setWpm',
-        payload: e.target.value
+        payload: wpm
       })
-      tone.current.setWpm(e.target.value);
+      tone.current.setWpm(wpm);
     }
 
-    useEffect(() => {
-      // set input defaults here
-      
-    }, [state]);
+    function setRangePinStyle(e: any){
+      console.log('range', e.target);
+      let rangePin = e.target.shadowRoot.querySelector('.range-pin');
+      rangePin.style = PIN_STYLE;
+    }
 
     useEffect(() => {
           if (isPlaying){
@@ -109,22 +117,6 @@ import '../theme/style.scss';
               tone.current.stopTone();
           }
     }, [isPlaying]);
-
-    useIonViewDidEnter(() => {
-        console.log('ionViewDidEnter event fired');
-      });
-    
-    useIonViewDidLeave(() => {
-    console.log('ionViewDidLeave event fired');
-    });
-
-    useIonViewWillEnter(() => {
-    console.log('ionViewWillEnter event fired');
-    });
-
-    useIonViewWillLeave(() => {
-    console.log('ionViewWillLeave event fired');
-    });
     
     return (
     <IonMenu menuId="settings" contentId="settingsMenu" type="overlay" side="end">
@@ -133,68 +125,76 @@ import '../theme/style.scss';
           <IonTitle>Settings</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <IonContent className="MenuBody" onClick={() => {console.log("touch")}}>
-      {/* <IonItem>
-        <IonLabel>Theme</IonLabel>
-        <IonSelect onIonChange={changeTheme}>
-          <IonSelectOption value="light">Light</IonSelectOption>
-          <IonSelectOption value="dark">Dark</IonSelectOption>
-        </IonSelect>
-      </IonItem> */}
-      <IonItem>
-        <IonLabel>Difficulty</IonLabel>
-        <IonSelect onIonChange={changeDifficulty}>
-          <IonSelectOption value="beginner">Beginner</IonSelectOption>
-          <IonSelectOption value="intermediate">Intermediate</IonSelectOption>
-          <IonSelectOption value="expert">Expert</IonSelectOption>
-        </IonSelect>
-      </IonItem>
-        <div>
+      <IonContent className="MenuBody">
+
+        <IonRadioGroup onIonChange={changeDifficulty}>
+          <IonListHeader>
+            <IonLabel>Difficulty</IonLabel>
+          </IonListHeader>
           <IonItem>
+            <IonLabel>Beginner</IonLabel>
+            <IonRadio slot="end" value="beginner" checked={(state.difficulty === 'beginner')}/>
+          </IonItem>
+          <IonItem>
+            <IonLabel>Intermediate</IonLabel>
+            <IonRadio slot="end" value="intermediate" checked={(state.difficulty === 'intermediate')}/>
+          </IonItem>
+          <IonItem>
+            <IonLabel>Expert</IonLabel>
+            <IonRadio slot="end" value="expert" checked={(state.difficulty === 'expert')}/>
+          </IonItem>
+        </IonRadioGroup>
+
+        <IonRadioGroup onIonChange={changeTone}>
+          <IonListHeader slot="center">
+            <IonLabel>Tone Type</IonLabel>
+          </IonListHeader>
+          <IonItem>
+            <IonLabel>Sine</IonLabel>
+            <IonRadio slot="end" value="sine" checked={(state.toneType === 'sine')}/>
+          </IonItem>
+          <IonItem>
+            <IonLabel>Square</IonLabel>
+            <IonRadio slot="end" value="square" checked={(state.toneType === 'square')}/>
+          </IonItem>
+          <IonItem>
+            <IonLabel>Sawtooth</IonLabel>
+            <IonRadio slot="end" value="sawtooth" checked={(state.toneType === 'sawtooth')}/>
+          </IonItem>
+          <IonItem>
+            <IonLabel>Triangle</IonLabel>
+            <IonRadio slot="end" value="triangle"checked={(state.toneType === 'triangle')}/>
+          </IonItem>
+        </IonRadioGroup>
+
+        <IonItem>
           <IonRange 
               min={min.current} 
               max={max.current} 
               defaultValue={state.frequency}
               value={state.frequency}
-              pin={true} 
               onIonChange={changeFrequency}
+              onTouchStart={() => {setIsPlaying(true)}}
+              onTouchEnd={() => {setIsPlaying(false)}}
+              pin={true}
+              onLoad={setRangePinStyle}
           >
-            <IonLabel slot="start">{ min.current } Hz</IonLabel>
-            <IonLabel slot="end">{ max.current } Hz</IonLabel>
+            <IonIcon icon={pulse} slot="start" />
           </IonRange>
-          <IonButton 
-            fill="outline" 
-            size="small"
-            style={{flex: 1, margin: '0 15px'}}
-            onClick={() => {
-              setIsPlaying(!isPlaying);
-            }}
-          >
-            <IonIcon icon={(isPlaying) ? square:play}></IonIcon>
-          </IonButton>
-          </IonItem>
-          <IonItem>
-            <IonLabel>Tone Type</IonLabel>
-            <IonSelect onIonChange={toneChange}>
-              <IonSelectOption value="sine" selected={(state.toneType === 'sine')}>Sine</IonSelectOption>
-              <IonSelectOption value="square" selected={(state.toneType === 'square')}>Square</IonSelectOption>
-              <IonSelectOption value="sawtooth" selected={(state.toneType === 'sawtooth')}>Sawtooth</IonSelectOption>
-              <IonSelectOption value="triangle" selected={(state.toneType === 'triangle')}>Triangle</IonSelectOption>
-            </IonSelect>
-          </IonItem>
-        </div>
+        </IonItem>
+
         <IonItem>
-            <IonLabel>
-              WPM
-            </IonLabel>
-            <IonInput 
-              slot="end"
-              type="number" 
-              value={state.wpm.toString()} 
+          <IonRange
+              min={minWpm.current} 
+              max={maxWpm.current} 
+              defaultValue={state.wpm}
+              value={state.wpm}
               onIonChange={wpmChange}
-              style={wpmInputStyle}
-            >  
-            </IonInput>
+              pin={true}
+              onLoad={setRangePinStyle}
+          >
+            <IonIcon icon={speedometer} slot="start" />
+          </IonRange>
         </IonItem>
       </IonContent>
     </IonMenu>

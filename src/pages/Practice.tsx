@@ -103,7 +103,7 @@ const PracticePage: React.FC = () => {
               <>
                 <Challenges challenges={sessionChallenges}/>
                 <IonButton className="challengeSkipBtn" onClick={skipChallenge}>
-                  Skip
+                  <IonIcon icon={refresh} />
                 </IonButton>
               </>
             )

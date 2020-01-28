@@ -33,7 +33,7 @@ function getDefault(){
         frequency: 440,
         wpm: 20,
         toneType: 'sine',
-        difficulty: 'easy',
+        difficulty: 'beginner',
     }
 }
 

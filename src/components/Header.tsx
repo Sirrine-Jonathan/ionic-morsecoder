@@ -1,7 +1,7 @@
 import { IonHeader, IonToolbar, IonButtons, IonMenuButton, IonTitle, IonIcon, IonRouterLink, IonBackButton, IonMenuToggle } from "@ionic/react";
 import React from "react";
 import '../theme/style.scss';
-import { settings, menu } from "ionicons/icons";
+import { settings, menu, options } from "ionicons/icons";
 
 interface HeaderProps {
     title: string,
@@ -22,7 +22,7 @@ const Header: React.FC<HeaderProps> = ({
                     className="menuButtonContainer"
                 >
                     <IonMenuButton menu="main" id="mainMenu" autoHide={false}>
-                        <IonIcon icon={menu} className="menuIcon mainMenuIcon" />
+                        <IonIcon icon={menu} className="menuIcon" />
                     </IonMenuButton>
                 </IonButtons>
                 <IonTitle className="title">{ title }</IonTitle>
@@ -31,7 +31,7 @@ const Header: React.FC<HeaderProps> = ({
                     className="rightButtonContainer"
                 >
                     <IonMenuButton menu="settings" id="settingsMenu" autoHide={false}>
-                        <IonIcon icon={settings} className="menuIcon settingsMenuIcon" />
+                        <IonIcon icon={options} className="menuIcon settingsMenuIcon" />
                     </IonMenuButton>
                 </IonButtons>
             </IonToolbar>

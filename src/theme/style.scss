@@ -119,7 +119,7 @@
 }
 
 .homeInput {
-    font-size: 55px;
+    font-size: 8vh;
     overflow-x: scroll;
 }
 
@@ -167,8 +167,8 @@ button.eventful-unpressed {
     align-self: flex-end;
     position: absolute;
     z-index: 2;
-    bottom: 190px;
-    right: 4px;
+    bottom: 104px;
+    right: 2px;
 }
 
 .challengeList {
@@ -185,4 +185,51 @@ button.eventful-unpressed {
     --color: var(--ion-color-dark-contrast);
     background: var(--ion-color-dark);
     color: var(--ion-color-dark-contrast);
+}
+
+.mainMenuIcon {
+    color: var(--ion-color-dark-contrast);
+}
+
+.drillCard {
+    margin: 5px;
+    padding: 5px 15px;
+    font-size: 6.5vh;
+    background-color: var(--ion-color-secondary-tint);
+    color: var(--ion-color-secondary-contrast);
+}
+
+.drillCard:first-of-type {
+    background-color: var(--ion-color-secondary-shade);
+    border: 3px solid var(--ion-color-secondary-tint);
+}
+
+ion-range .range-pin {
+    padding: 16px 34px 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 15px;
+    transform: translate(-16px,-25px);
+    border-radius: 5px;
+}
+
+ion-list-header {
+    color: var(--ion-color-dark-contrast);
+    font-size: 25px;
+    display:flex;
+    justify-content:center;
+}
+
+ion-range {
+    --bar-background: var(--ion-color-dark-contrast);
+    --bar-background-active: var(--ion-color-light);
+    --knob-background: var(--ion-color-tertiary);
+    --pin-background: var(--ion-color-tertiary);
+}
+
+ion-radio {
+    --color: var(--ion-color-dark-contrast);
+    --color-checked: var(--ion-color-tertiary);
 }

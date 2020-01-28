@@ -29,13 +29,11 @@ let AppContext = React.createContext<AppContext>(initialContext);
 let reducer = (state: any, action: StateAction) => {
   switch(action.type) {
     case "setWpm": {
-      console.log(action);
       return { ...state, wpm: action.payload }
       break;
     }
     case "setFrequency": {
       const newState = { ...state, frequency: action.payload }
-      setItem(PERSISTANT, JSON.stringify(newState));
       return newState;
       break;
     }
