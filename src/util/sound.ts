@@ -55,7 +55,6 @@ class TonePlayer {
 		Tone.Transport.cancel(Tone.context.now());
 		this.symbols = this.buildArray(morse);
 		this.totalUnitsUsed = this.calculateTotalUnitsUsed();
-		console.log(this.baseUnit);
 	}
 
 	buildArray = (morse: string) => {
@@ -82,11 +81,9 @@ class TonePlayer {
 		let elapsedUnits = 1;
 
 		function playDot(){
-			console.log('dot');
 			ref.synth.triggerAttackRelease(ref.frequency, ref.baseUnit);
 		}
 		function playDash(){
-			console.log('dash');
 			ref.synth.triggerAttackRelease(ref.frequency, ref.baseUnit * 3);
 		}
 		function endOfPlayback(){
@@ -132,12 +129,6 @@ class TonePlayer {
 		Tone.Transport.stop();
 	}
 
-	print = () => {
-		console.log('Symbols Array', this.symbols);
-		console.log('Symobls String', this.symbols.join(''));
-		console.log('Simplified String', this.getSimpleString());
-	}
-
 	getSimpleString = () => {
 		return this.symbols.join('')
 			.split(this.SYMBOL_SPACE).join('')
@@ -173,7 +164,8 @@ class TonePlayer {
 	}
 
 	setWpm(wpm: number){
-
+		this.wpm = wpm;
+		this.baseUnit = this.getBaseUnit(wpm);
 	}
 
 	setTone(tone: string){
@@ -190,7 +182,6 @@ class TonePlayer {
 		if (SoundPlayer && SoundPlayer.loaded){
 			SoundPlayer.start();
 		} else {
-			console.log(`${name} sound doesn't exist`);
 		}
 	}
 
@@ -199,7 +190,7 @@ class TonePlayer {
 		if (SoundPlayer && SoundPlayer.loaded){
 			SoundPlayer.start();
 		} else {
-			console.log(`${name} sound doesn't exist`);
+
 		}
 	}
 }

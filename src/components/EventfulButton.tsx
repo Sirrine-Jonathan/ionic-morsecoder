@@ -21,7 +21,7 @@ const EventfulButton: React.FC<EventfulButtonProps> = ({ onPress, onRelease, chi
   const { state, dispatch } = useContext(AppContext);
   const tone = useRef<any>(GlobalPlayer);
 
-  function startOsc(){
+  function startOsc( ){
     tone.current.startTone();
   };
 

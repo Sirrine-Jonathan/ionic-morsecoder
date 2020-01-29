@@ -1,10 +1,9 @@
-
 const easyDrills = [
     "A B C D",
     "Q F L Y",
     "M I T E",
     "V J U W",
-]
+];
 
 const intermediateDrills = [
     "Hi how are you",
@@ -20,6 +19,30 @@ const expertDrills = [
     "five dozen liquor jugs",
     "How quickly daft jumping zebras vex",
     "TV quiz drag nymphs blew JFK cox"
+];
+
+const easyExercises = [
+    "ABCD",
+    "QFLY",
+    "MITE",
+    "VJUW",
+];
+
+const intermediateExercises = [
+    "how", "are", "you",
+    "What", "is", "your", "name",
+    "Thank", "you",
+    "Good", "morning"
+];
+
+const expertExercises = [
+    "quick",
+    "jumps",
+    "Pack",
+    "dozen", "liquor jugs",
+    "quickly daft",
+    "jumping zebras vex",
+    "drag nymphs blew"
 ];
 
 function shuffle(array: string[]) {
@@ -65,12 +88,23 @@ function getChallenges(difficulty: string, amount: number){
         challenges.push(nextDrill);
         ind++;
     }
-    console.log(challenges);
-    //return [['a']];
     return challenges;
+}
+
+function getExercise(difficulty: string){
+    let drills = easyExercises;
+    if (difficulty === 'intermediate'){
+        drills = intermediateExercises;
+    } else if (difficulty === 'expert'){
+        drills = expertExercises;
+    }
+    let randomIndex = Math.floor(Math.random() * drills.length);
+    let sentence = drills[randomIndex];
+    return sentence;
 }
 
 export { 
     getDrill,
-    getChallenges
+    getChallenges,
+    getExercise
 };

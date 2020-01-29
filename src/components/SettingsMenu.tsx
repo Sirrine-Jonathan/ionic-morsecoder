@@ -4,45 +4,34 @@ import {
     IonIcon,
     IonItem,
     IonLabel,
-    IonList,
     IonMenu,
-    IonMenuToggle,
     IonTitle,
     IonToolbar,
-    IonSelect,
-    IonSelectOption,
     IonRange,
-    IonButton,
-    IonInput,
-    useIonViewDidLeave,
-    useIonViewDidEnter,
-    useIonViewWillEnter,
-    useIonViewWillLeave,
     IonRadioGroup,
     IonListHeader,
     IonRadio,
   } from '@ionic/react';
   import React, { useState, useContext, useRef, useEffect } from 'react';
-  import { RouteComponentProps, withRouter } from 'react-router-dom';
-  import { AppPage } from '../declarations';
+  import { withRouter } from 'react-router-dom';
   import './Menu.scss';
-import { square, play, pulse, speedometer } from 'ionicons/icons';
+import { pulse, speedometer } from 'ionicons/icons';
 import { AppContext } from '../State';
-import { TonePlayer, GlobalPlayer } from '../util/sound';
+import { GlobalPlayer } from '../util/sound';
+import Dictionary from '../util/dictionary';
 import '../theme/style.scss';
-  
 
-  
   const SettingsMenu: React.FunctionComponent = () => {
       
     const [context, setContext] = useState();
     const [oscillator, setOscillator] = useState();
     const [gainNode, setGainNode] = useState();
     const [isPlaying, setIsPlaying] = useState(false);
+    const [isPlayingTest, setIsPlayingTest] = useState(false);
     const { state, dispatch } = useContext(AppContext);
     const tone = useRef<any>(GlobalPlayer);
 
-    const PIN_STYLE = "white-space:nowrap;padding: 13px 34px 12px;display: flex;flex-direction: column;justify-content: center;align-items: center;font-size: 15px;transform: translate(-16px,-25px);border-radius: 5px;";
+    const PIN_STYLE = "color: var(--ion-color-tertiary-contrast);white-space:nowrap;padding: 13px 34px 12px;display: flex;flex-direction: column;justify-content: center;align-items: center;font-size: 15px;transform: translate(-16px,-25px);border-radius: 5px;";
 
     const min = useRef(200);
     const max = useRef(1000);
@@ -55,7 +44,6 @@ import '../theme/style.scss';
       let rangePin = e.target.shadowRoot.querySelector('.range-pin');
       rangePin.style = PIN_STYLE;
       rangePin.innerHTML = "<div>" + frequency + " Hz</div>";
-
       dispatch({ type: "setFrequency", payload: e.target.value });
       tone.current.setFrequency(e.target.value);
       if (oscillator){
@@ -105,19 +93,37 @@ import '../theme/style.scss';
     }
 
     function setRangePinStyle(e: any){
-      console.log('range', e.target);
       let rangePin = e.target.shadowRoot.querySelector('.range-pin');
       rangePin.style = PIN_STYLE;
     }
 
     useEffect(() => {
-          if (isPlaying){
-              tone.current.startTone();
-          } else {
-              tone.current.stopTone();
-          }
-    }, [isPlaying]);
-    
+      if (isPlayingTest){
+        tone.current.setMorse(Dictionary.translate("test"));
+        tone.current.play(function(){
+          setIsPlayingTest(false);
+        });
+      } else {
+        tone.current.stop();
+      }
+    }, [isPlayingTest]);
+
+    function playTest(){
+      tone.current.stop();
+      tone.current.setMorse(Dictionary.translate("test"));
+      tone.current.play(function(){
+        setIsPlayingTest(false);
+      });
+    }
+
+    useEffect(() => {
+      if (isPlaying){
+        tone.current.startTone();
+      } else {
+        tone.current.stopTone();
+      }
+    }, [isPlaying]);  
+
     return (
     <IonMenu menuId="settings" contentId="settingsMenu" type="overlay" side="end">
       <IonHeader className="MenuHeader ">
@@ -190,6 +196,8 @@ import '../theme/style.scss';
               defaultValue={state.wpm}
               value={state.wpm}
               onIonChange={wpmChange}
+              onTouchStart={() => {}}
+              onTouchEnd={() => {setIsPlayingTest(true)}}
               pin={true}
               onLoad={setRangePinStyle}
           >
