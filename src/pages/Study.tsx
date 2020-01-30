@@ -10,9 +10,10 @@ import { AppContext } from '../State';
 
 const ListPage: React.FC = () => {
   const [playingAll, setPlayingAll] = useState(false);
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(-1);
   const { state, dispatch } = useContext(AppContext);
   let symbolList = useRef(getSymbolList());
+  let list = useRef(getListWithSpaces());
   const didMount = useRef(false);
   const tone = useRef<any>(GlobalPlayer);
 
@@ -26,23 +27,32 @@ const ListPage: React.FC = () => {
 
   useEffect(() => {
     if (didMount.current){
-        if (playingAll){
-            tone.current.setMorse(Dictionary.translate(
-              symbolList.current[currentIndex]
-            ));
-            tone.current.play(function(){
-              if (currentIndex + 1 >= symbolList.current.length){
-                setCurrentIndex(0);
-                setPlayingAll(false);
-              } else {
-                setCurrentIndex(currentIndex + 1);
-              }
-            });
+      if (playingAll){
+        if (currentIndex < 0){
+          setCurrentIndex(currentIndex + 1);
+          tone.current.setMorse(Dictionary.translate(
+            list.current[0]
+          ));
         } else {
-            tone.current.stop();
+          tone.current.setMorse(Dictionary.translate(
+            list.current[currentIndex]
+          ));
         }
+        
+        tone.current.play(function(){
+          if (currentIndex + 1 >= list.current.length){
+            setCurrentIndex(0);
+            setPlayingAll(false);
+          } else {
+            setCurrentIndex(currentIndex + 1);
+          }
+        });
+      } else {
+        tone.current.stop();
+        setCurrentIndex(-1);
+      }
     } else {
-        didMount.current = true;
+      didMount.current = true;
     }
   }, [playingAll, currentIndex]);
 
@@ -55,7 +65,6 @@ const ListPage: React.FC = () => {
           slot="end" 
           icon={(playingAll) ? square:play} 
           onClick={togglePlayAll} 
-          color="#000"
         />
       </div>
       <IonContent>
@@ -82,6 +91,11 @@ function getSymbolList(){
   return items;
 }
 
+function getListWithSpaces(){
+  let list = getSymbolList().join(' ').split('');
+  return list;
+}
+
 interface StudyItemsProps {
   curIndex: number
 }
@@ -89,10 +103,10 @@ interface StudyItemsProps {
 const ListItems: React.FC<StudyItemsProps> = ({ curIndex }) => {
 
   let items = getSymbolList().map((each, index) => {
-    if (index === curIndex){
-      return (<SymbolListItem className="studyItem studyItemPlaying" symbol={each} key={index}/>);
+    if (index === (curIndex / 2)){
+      return (<SymbolListItem className="studyItem" isPlaying={true} symbol={each} key={index}/>);
     } else {
-      return (<SymbolListItem className="studyItem" symbol={each} key={index}/>);
+      return (<SymbolListItem className="studyItem" isPlaying={false} symbol={each} key={index}/>);
     }
   });
 

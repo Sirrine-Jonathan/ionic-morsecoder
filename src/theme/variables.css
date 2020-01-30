@@ -20,12 +20,12 @@ http://ionicframework.com/docs/theming/ */
   --ion-color-secondary-shade: #cf444b;
   --ion-color-secondary-tint: #ed5f66;
 
-  --ion-color-tertiary: #ff9d76;
-  --ion-color-tertiary-rgb: 255,157,118;
-  --ion-color-tertiary-contrast: #000000;
-  --ion-color-tertiary-contrast-rgb: 0,0,0;
-  --ion-color-tertiary-shade: #e08a68;
-  --ion-color-tertiary-tint: #ffa784;
+  --ion-color-tertiary: #334d66;
+  --ion-color-tertiary-rgb: 51,77,102;
+  --ion-color-tertiary-contrast: #ffffff;
+  --ion-color-tertiary-contrast-rgb: 255,255,255;
+  --ion-color-tertiary-shade: #2d445a;
+  --ion-color-tertiary-tint: #475f75;
 
   --ion-color-quaternary: #f6e1e1;
   --ion-color-quaternary-rgb: 246,225,225;
