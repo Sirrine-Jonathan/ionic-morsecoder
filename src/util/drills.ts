@@ -1,49 +1,38 @@
-const easyDrills = [
-    "A B C D",
-    "Q F L Y",
-    "M I T E",
-    "V J U W",
-];
+const randomWords = require('random-words');
 
-const intermediateDrills = [
-    "Hi how are you",
-    "What is your name",
-    "Thank you",
-    "Good morning"
-];
+const easyDrills: string[] = [];
+for(let i = 0; i <= 50; i++){
+    easyDrills.push(randomWords({exactly: 1, maxLength: 5, }).join('').split('').join(' '));
+}
 
-const expertDrills = [
-    "The quick brown fox",
-    "jumps over a lazy dog",
-    "Pack my box with",
-    "five dozen liquor jugs",
-    "How quickly daft jumping zebras vex",
-    "TV quiz drag nymphs blew JFK cox"
-];
+const intermediateDrills: string[]= [];
+for(let i = 0; i <= 50; i++){
+    intermediateDrills.push(randomWords({exactly: 3, join: ' ', maxLength: 4 }));
+}
+
+const expertDrills: string[] = []
+for(let i = 0; i <= 50; i++){
+    expertDrills.push(randomWords({min: 4, max: 7, join: ' ', minLength: 4 }));
+}
+
+console.log('iDrills', intermediateDrills);
+console.log('eDrills', expertDrills);
 
 const easyExercises = [
-    "ABCD",
-    "QFLY",
-    "MITE",
-    "VJUW",
+    ..."0123456789".split(''),
+    ..."ABCDEFGHIJKLMNOPQRSTUVWXYZ".split('')
 ];
 
-const intermediateExercises = [
-    "how", "are", "you",
-    "What", "is", "your", "name",
-    "Thank", "you",
-    "Good", "morning"
-];
+const intermediateExercises = easyDrills.map((drill) => { return drill.split(" ").join('')});
+console.log(intermediateExercises);
 
-const expertExercises = [
-    "quick",
-    "jumps",
-    "Pack",
-    "dozen", "liquor jugs",
-    "quickly daft",
-    "jumping zebras vex",
-    "drag nymphs blew"
-];
+const expertExercises: string[] = [];
+let temp = expertDrills.map((drill) => { return drill.split(' ')});
+temp.forEach((each) => {
+    each.forEach((drill) => {
+        expertExercises.push(drill);
+    })
+})
 
 function shuffle(array: string[]) {
     array.sort(() => Math.random() - 0.5);
