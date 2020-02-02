@@ -15,9 +15,6 @@ for(let i = 0; i <= 50; i++){
     expertDrills.push(randomWords({min: 4, max: 7, join: ' ', minLength: 4 }));
 }
 
-console.log('iDrills', intermediateDrills);
-console.log('eDrills', expertDrills);
-
 const easyExercises = [
     ..."0123456789".split(''),
     ..."ABCDEFGHIJKLMNOPQRSTUVWXYZ".split('')

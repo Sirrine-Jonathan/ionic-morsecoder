@@ -1,4 +1,4 @@
-import { IonButtons, IonContent, IonHeader, IonIcon, IonItem, IonList, IonMenuButton, IonPage, IonTitle, IonToolbar, IonText, IonRow } from '@ionic/react';
+import { IonContent, IonIcon, IonList, IonPage, IonText } from '@ionic/react';
 import Dictionary from '../util/dictionary';
 import React, { useState, useRef, useContext, useEffect } from 'react';
 import SymbolListItem from '../components/SymbolListItem';
@@ -63,6 +63,7 @@ const ListPage: React.FC = () => {
         <IonText>Play All</IonText>
         <IonIcon 
           slot="end" 
+          class="playAllIcon"
           icon={(playingAll) ? square:play} 
           onClick={togglePlayAll} 
         />
