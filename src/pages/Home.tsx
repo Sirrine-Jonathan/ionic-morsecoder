@@ -1,14 +1,7 @@
 import React, { useState, useContext, useEffect, useRef } from 'react';
 import {
-  IonButtons,
-  IonContent,
-  IonHeader,
-  IonMenuButton,
   IonPage,
-  IonTitle,
-  IonToolbar,
   IonIcon,
-  IonText,
   IonInput
 } from '@ionic/react';
 import { keypad } from 'ionicons/icons';
@@ -22,7 +15,11 @@ import '../theme/style.scss';
 import Row from '../components/Row';
 import { AppContext } from '../State';
 import { TonePlayer, GlobalPlayer } from '../util/sound';
-
+import { Plugins } from "@capacitor/core";
+import { AdOptions, AdSize, AdPosition } from "capacitor-admob";
+import { BANNER_ID } from '../util/environment';
+ 
+const { AdMob } = Plugins;
 
 
 const HomePage: React.FC = () => {
@@ -92,6 +89,31 @@ const HomePage: React.FC = () => {
       didMount.current = true;
     }
   }, [isPlayingBack]);
+  
+  const options: AdOptions = {
+    adId: BANNER_ID,
+    adSize: AdSize.BANNER,
+    position: AdPosition.TOP_CENTER
+  }
+
+  function banner() {
+    // Show Banner Ad
+    AdMob.showBanner(options).then(
+      (value: any) => {
+        console.log(value); // true
+      },
+      (error: any) => {
+        console.error(error); // show error
+      }
+    );
+ 
+    // Subscibe Banner Event Listener
+    AdMob.addListener("onAdLoaded", (info: boolean) => {
+      console.log("Banner Ad Loaded");
+    });
+  }
+  banner();
+
 
   return (
     <IonPage>

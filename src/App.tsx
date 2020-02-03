@@ -33,6 +33,11 @@ import '@ionic/react/css/display.css';
 import './theme/variables.css';
 import { AppContextProvider } from './State';
 
+/* Ads */
+import { Plugins } from '@capacitor/core';
+import { APP_ID } from './util/environment';
+const { AdMob } = Plugins;
+
 setupConfig({
   rippleEffect: false,
   mode: 'md',
@@ -62,6 +67,8 @@ const appPages: AppPage[] = [
 ];
 
 const App: React.FC = () => {
+
+  AdMob.initialize(APP_ID);
 
   // Use matchMedia to check the user preference
   const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');

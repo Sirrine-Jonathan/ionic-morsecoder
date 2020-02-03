@@ -5,6 +5,8 @@
   "dependencies": {
     "@capacitor/android": "^1.4.0",
     "@capacitor/core": "^1.4.0",
+    "@ionic-native/admob-free": "^5.20.0",
+    "@ionic-native/core": "^5.20.0",
     "@ionic/react": "^4.11.0",
     "@ionic/react-router": "^4.11.0",
     "@types/jest": "^24.0.18",
@@ -13,6 +15,7 @@
     "@types/react-dom": "^16.9.1",
     "@types/react-router": "^5.1.1",
     "@types/react-router-dom": "^5.1.0",
+    "capacitor-admob": "^0.1.0",
     "ionicons": "^4.6.3",
     "node-sass": "^4.13.0",
     "random-words": "^1.1.0",
