@@ -1,5 +1,5 @@
 import { Plugins } from '@capacitor/core';
-import { FREQUENCY, VIBRATE, SOUND, THEME, PERSISTANT } from '../constants';
+import { PERSISTANT } from '../constants';
 
 const { Storage } = Plugins;
 
@@ -9,7 +9,6 @@ async function getItem (key: string){
 }
 
 async function setItem (key: string, value: string){
-    console.log(`setting ${key} to ${value}`);
     return await Storage.set({
         key: key,
         value: value

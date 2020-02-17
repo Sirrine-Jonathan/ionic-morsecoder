@@ -1,6 +1,3 @@
-import {
-  IonProgressBar
-} from '@ionic/react';
 import React, { useState, useEffect, useRef } from 'react';
 import TimingBar from './TimingBar';
 
@@ -69,8 +66,8 @@ const TimingTool: React.FunctionComponent<TimingToolProps> = ({
     if (started.current || buttonPressed){
       started.current = true;
       requestRef.current = requestAnimationFrame(keepTime);
-      return () => cancelAnimationFrame(requestRef.current);
     }
+    return () => cancelAnimationFrame(requestRef.current);
   }, [keepTime]);
 
   useEffect(() => {
@@ -79,6 +76,7 @@ const TimingTool: React.FunctionComponent<TimingToolProps> = ({
       previousTimeRef.current = 0;
       setShouldReset(true);
     }
+    return () => cancelAnimationFrame(requestRef.current);
   }, [buttonPressed]);
 
   function getSoundLevel(){
@@ -122,14 +120,6 @@ const TimingTool: React.FunctionComponent<TimingToolProps> = ({
 
   return (
     <>
-      {/* 
-      
-      // probably need to include height style on this for it to work again
-
-      <IonProgressBar value={soundPercent}></IonProgressBar>
-      <IonProgressBar value={silentPercent}></IonProgressBar>
-
-      */}
       <TimingBar value={soundPercent} level={getSoundLevel()}/>
       <TimingBar value={silentPercent} level={getSilentLevel()}/>
     </>

@@ -1,17 +1,20 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Redirect, Route } from 'react-router-dom';
-import { IonApp, IonRouterOutlet, IonSplitPane, setupConfig } from '@ionic/react';
+import { IonApp, IonRouterOutlet, setupConfig } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { AppPage } from './declarations';
 
 import Menu from './components/Menu';
 import SettingsMenu from './components/SettingsMenu';
-import Tabs from './components/Tabs';
 import Home from './pages/Home';
 import Practice from './pages/Practice';
 import Study from './pages/Study';
 import Train from './pages/Train';
 import { home, book, school, fitness } from 'ionicons/icons';
+
+/* AdMob stuff */
+import { Plugins } from '@capacitor/core';
+const { AdMob } = Plugins;
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -32,11 +35,6 @@ import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
 import { AppContextProvider } from './State';
-
-/* Ads */
-import { Plugins } from '@capacitor/core';
-import { APP_ID } from './util/environment';
-const { AdMob } = Plugins;
 
 setupConfig({
   rippleEffect: false,
@@ -68,8 +66,6 @@ const appPages: AppPage[] = [
 
 const App: React.FC = () => {
 
-  AdMob.initialize(APP_ID);
-
   // Use matchMedia to check the user preference
   const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
 
@@ -82,6 +78,10 @@ const App: React.FC = () => {
   function toggleDarkTheme(shouldAdd: boolean) {
     document.body.classList.toggle('dark', shouldAdd);
   }
+
+  useEffect(() => {
+    AdMob.initialize();
+  })
 
   return (
     <AppContextProvider>

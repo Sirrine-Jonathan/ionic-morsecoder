@@ -1,6 +1,6 @@
 // http://bit.ly/10N1CR3ACT
 // ettblog.eu/typescript-react/context/
-import React, { createContext, useReducer, useEffect, useRef } from "react";
+import React, { useReducer, useEffect, useRef } from "react";
 import { getInitial, setItem, getDefault } from "./util/storage";
 import { PERSISTANT } from "./constants";
 
@@ -30,39 +30,30 @@ let reducer = (state: any, action: StateAction) => {
   switch(action.type) {
     case "setWpm": {
       return { ...state, wpm: action.payload }
-      break;
     }
     case "setFrequency": {
       const newState = { ...state, frequency: action.payload }
       return newState;
-      break;
     }
     case "setTheme": {
       return { ...state, theme: action.payload }
-      break;
     }
     case "setSound": {
-      console.log('in reducer', action);
       return { ...state, sound: action.payload }
-      break;
     }
     case "setVibrate": {
       return { ...state, vibrate: action.payload }
-      break;
     }
     case "setToneType": {
       return { ...state, toneType: action.payload }
-      break;
     }
     case "setDifficulty": {
       return { ...state, difficulty: action.payload }
-      break;
     }
     case "setAll": {
       return action.payload;
     }
   }
-  console.log('end reducer', state);
   return state;
 };
 
@@ -87,14 +78,11 @@ function AppContextProvider(props: any) {
         toneType: state.toneType,
         difficulty: state.difficulty
       }
-      console.log('ready state', readyState);
       setItem(PERSISTANT, JSON.stringify(readyState));
     }
   }, [state]);
 
   useEffect(() => {
-    
-    console.log('AppContext useEffect set state first', state);
     getInitial().then((data) => {
       dispatch({ type: 'setAll', payload: data });
       hasBeenSet.current = true;

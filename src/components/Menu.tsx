@@ -25,11 +25,10 @@ const Menu: React.FunctionComponent<MenuProps> = ({ appPages }) => (
         <IonTitle>Menu</IonTitle>
       </IonToolbar>
     </IonHeader>
-    <IonContent className="MenuBody" onIonScroll={() => console.log('dragging main')}>
+    <IonContent className="MenuBody">
       <IonList>
         {appPages.map((appPage, index) => {
           let icon = appPage.icon;
-          console.log('menu icon', icon);
           return (
             <IonMenuToggle key={index} autoHide={false}>
               <IonItem routerLink={appPage.url} className="menuItem" routerDirection="none">

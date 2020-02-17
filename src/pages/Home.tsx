@@ -7,20 +7,13 @@ import {
 import { keypad } from 'ionicons/icons';
 import EventfulButton from '../components/EventfulButton';
 import TimingTool from '../components/TimingTool';
-import TextInput from '../components/TextInput';
 import Header from '../components/Header';
 import { close, play, square } from 'ionicons/icons';
 import Dictionary from '../util/dictionary';
 import '../theme/style.scss';
 import Row from '../components/Row';
 import { AppContext } from '../State';
-import { TonePlayer, GlobalPlayer } from '../util/sound';
-import { Plugins } from "@capacitor/core";
-import { AdOptions, AdSize, AdPosition } from "capacitor-admob";
-import { BANNER_ID } from '../util/environment';
- 
-const { AdMob } = Plugins;
-
+import { GlobalPlayer } from '../util/sound';
 
 const HomePage: React.FC = () => {
 
@@ -28,7 +21,7 @@ const HomePage: React.FC = () => {
   const [currentMorse, setCurrentMorse] = useState("");
   const [isPlayingBack, setIsPlayingBack] = useState(false);
   const [textWasCleared, setTextWasCleared] = useState(true);
-  const { state, dispatch } = useContext(AppContext);
+  const { state } = useContext(AppContext);
   const didMount = useRef(false);
   const tone = useRef<any>(GlobalPlayer);
 
@@ -88,33 +81,11 @@ const HomePage: React.FC = () => {
     } else {
       didMount.current = true;
     }
+    return function(){
+      tone.current.stop();
+    }
   }, [isPlayingBack]);
   
-  const options: AdOptions = {
-    adId: BANNER_ID,
-    adSize: AdSize.BANNER,
-    position: AdPosition.TOP_CENTER
-  }
-
-  function banner() {
-    // Show Banner Ad
-    AdMob.showBanner(options).then(
-      (value: any) => {
-        console.log(value); // true
-      },
-      (error: any) => {
-        console.error(error); // show error
-      }
-    );
- 
-    // Subscibe Banner Event Listener
-    AdMob.addListener("onAdLoaded", (info: boolean) => {
-      console.log("Banner Ad Loaded");
-    });
-  }
-  banner();
-
-
   return (
     <IonPage>
       <Header title="mo.-.se code.-." showSettings={true}/>

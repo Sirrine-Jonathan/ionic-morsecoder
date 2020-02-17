@@ -9,9 +9,8 @@ interface RowProps {
 const Row: React.FC<RowProps> = ({ justify, align, children }) => {
 
     function touchMove(ev: any){
-        console.log('touches', ev.targetTouches);
         if (ev.targetTouches.length === 2 && ev.changedTouches.length === 2) {
-            console.log('two', ev.targetTouches);
+            
         }
     }
 

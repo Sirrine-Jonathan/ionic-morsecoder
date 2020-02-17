@@ -23,9 +23,6 @@ import '../theme/style.scss';
 
   const SettingsMenu: React.FunctionComponent = () => {
       
-    const [context, setContext] = useState();
-    const [oscillator, setOscillator] = useState();
-    const [gainNode, setGainNode] = useState();
     const [isPlaying, setIsPlaying] = useState(false);
     const [isPlayingTest, setIsPlayingTest] = useState(false);
     const { state, dispatch } = useContext(AppContext);
@@ -46,9 +43,7 @@ import '../theme/style.scss';
       rangePin.innerHTML = "<div>" + frequency + " Hz</div>";
       dispatch({ type: "setFrequency", payload: e.target.value });
       tone.current.setFrequency(e.target.value);
-      if (oscillator){
-        oscillator.frequency.setValueAtTime(e.target.value, context.currentTime);
-      }
+
     }
 
     function changeDifficulty(e: any){
@@ -58,19 +53,7 @@ import '../theme/style.scss';
       })
     }
     
-    function changeSound(e: any){
-      dispatch({
-        type: 'setSound',
-        payload: e.detail.checked
-      })
-    }
 
-    function changeVibrate(e: any){
-      dispatch({
-        type: 'setVibrate',
-        payload: e.detail.checked
-      })
-    }
 
     function changeTone(e: any){
       dispatch({
@@ -108,13 +91,6 @@ import '../theme/style.scss';
       }
     }, [isPlayingTest]);
 
-    function playTest(){
-      tone.current.stop();
-      tone.current.setMorse(Dictionary.translate("test"));
-      tone.current.play(function(){
-        setIsPlayingTest(false);
-      });
-    }
 
     useEffect(() => {
       if (isPlaying){
@@ -209,11 +185,6 @@ import '../theme/style.scss';
   )
 };
 
-let wpmInputStyle = {
-    textAlign: 'right',
-    fontSize: '20px',
-    paddingRight: '30px'
-  }
   
 export default withRouter(SettingsMenu);
   

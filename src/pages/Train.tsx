@@ -11,7 +11,7 @@ import { AppContext } from "../State"
 const TrainPage: React.FC = () => {
 
     const [isPlaying, setIsPlaying] = useState(false);
-    const { state, dispatch } = useContext(AppContext);
+    const { state } = useContext(AppContext);
     const [exercise, setExercise] = useState(getExercise(state.difficulty));
     const [input, setInput] = useState("");
     const tone = useRef<any>(GlobalPlayer);

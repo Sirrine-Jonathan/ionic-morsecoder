@@ -1,7 +1,7 @@
-import { IonHeader, IonToolbar, IonButtons, IonMenuButton, IonTitle, IonIcon, IonRouterLink, IonBackButton, IonMenuToggle } from "@ionic/react";
+import { IonHeader, IonToolbar, IonButtons, IonMenuButton, IonTitle, IonIcon } from "@ionic/react";
 import React from "react";
 import '../theme/style.scss';
-import { settings, menu, options } from "ionicons/icons";
+import { menu, options } from "ionicons/icons";
 
 interface HeaderProps {
     title: string,
@@ -10,9 +10,7 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ 
-    title, 
-    showSettings = false,
-    showHome = false,
+    title,
  }) => {
     return (
         <IonHeader>

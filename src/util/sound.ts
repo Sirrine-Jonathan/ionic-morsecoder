@@ -1,6 +1,4 @@
-import Tone, { Time, Signal } from "tone";
-import { Plugins, FilesystemDirectory, FilesystemEncoding } from '@capacitor/core';
-const { Filesystem } = Plugins;
+import Tone from "tone";
 
 class TonePlayer {
 

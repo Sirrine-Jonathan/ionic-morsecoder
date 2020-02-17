@@ -9,7 +9,6 @@ const Challenge: React.FC<ListCardsProps> = ({ drills }) => {
     let items = drills.map((each, index) => {
         return (<DrillCard title={each} key={index}/>);
     });
-    items = items;
     return (
         <div className="drillList" >
             {items}

@@ -1,10 +1,8 @@
-import React, { useState, useContext, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { IonItem, IonText, IonIcon } from "@ionic/react";
 import Dictionary from '../util/dictionary';
-import { attachProps } from "@ionic/react/dist/types/components/utils";
 import { play, square } from "ionicons/icons";
-import { TonePlayer, GlobalPlayer } from '../util/sound';
-import { AppContext } from "../State";
+import { GlobalPlayer } from '../util/sound';
 
 type SymbolListItemProps = {
     symbol: string,
@@ -12,9 +10,8 @@ type SymbolListItemProps = {
     isPlaying?: boolean,
 }
 
-const SymbolListItem: React.FC<SymbolListItemProps> = ({ symbol, className, isPlaying} ) => {
+const SymbolListItem: React.FC<SymbolListItemProps> = ({ symbol, isPlaying} ) => {
     let [isPlayingInner, setIsPlayingInner] = useState(false);
-    const { state, dispatch } = useContext(AppContext);
     const didMount = useRef(false);
     const tone = useRef<any>(GlobalPlayer);
 

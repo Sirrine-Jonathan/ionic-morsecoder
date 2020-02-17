@@ -1,19 +1,17 @@
-import { IonPage, IonContent, IonIcon, IonText, IonCard, IonList, IonButton } from "@ionic/react";
+import { IonPage, IonIcon, IonText, IonButton } from "@ionic/react";
 
-import React, { useState, useContext, useRef, useEffect } from "react";
+import React, { useState, useContext, useEffect } from "react";
 
 import Header from "../components/Header";
 import TimingTool from "../components/TimingTool";
 import EventfulButton from "../components/EventfulButton";
 import { keypad } from "ionicons/icons";
 import { AppContext } from "../State";
-import { getDrill, getChallenges } from '../util/drills';
-import DrillCard from "../components/DrillCard";
 import Dictionary from "../util/dictionary";
 import '../theme/style.scss';
-import { TonePlayer, GlobalPlayer } from "../util/sound";
 import { refresh } from 'ionicons/icons';
 import Challenges from "../components/Challenges";
+import { getChallenges } from "../util/drills";
 
 const PracticePage: React.FC = () => {
 
@@ -22,19 +20,14 @@ const PracticePage: React.FC = () => {
   const [isPushed, setIsPushed] = useState(false);
   const [currentMorse, setCurrentMorse] = useState("");
   const [textWasCleared, setTextWasCleared] = useState(true);
-  const [drillIndex, setDrillIndex] = useState(0);
-  const [text, setText] = useState('');
+  const [drillIndex] = useState(0);
   const [needsRefresh, setNeedsRefresh] = useState(false);
-  const { state, dispatch } = useContext(AppContext);
+  const { state } = useContext(AppContext);
   const [ sessionChallenges, setSessionChallenges ] = useState(() => {
-    console.log('difficulty', state.difficulty);
-    console.log('state', state);
     return getChallenges(state.difficulty, numberOfChallenges); 
   });
   const [challengeIndex, setChallengeIndex] = useState(sessionChallenges.length - 1);
-
-  const tone = useRef<any>(GlobalPlayer);
-
+  
   // returns dot duration in milliseconds
   function getBasicUnit(){
     return (1200 / state.wpm); 
@@ -70,7 +63,7 @@ const PracticePage: React.FC = () => {
         setCurrentMorse('');
       }
     } else {
-      if (sessionChallenges.length == 0){
+      if (sessionChallenges.length === 0){
         refreshFn();
         //setNeedsRefresh(true);
       }

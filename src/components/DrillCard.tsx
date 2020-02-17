@@ -13,7 +13,7 @@ interface DrillCardProps {
 const DrillCard: React.FunctionComponent<DrillCardProps> = ({ title }) => {
     const [showPopover, setShowPopover] = useState(false);
     let [isPlaying, setIsPlaying] = useState(false);
-    const { state, dispatch } = useContext(AppContext);
+    const { state } = useContext(AppContext);
     const didMount = useRef(false);
     const tone = useRef<any>(new TonePlayer(
         state.wpm,

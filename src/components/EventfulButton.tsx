@@ -1,12 +1,6 @@
-import React, { useState, useContext, useRef } from 'react';
-import { getItem } from '../util/storage';
+import React, { useState, useRef } from 'react';
 import './EventfulButton.scss';
-import { AppContext } from '../State';
-import {
-  Plugins,
-} from '@capacitor/core';
-import { TonePlayer, GlobalPlayer } from '../util/sound';
-const { Haptics } = Plugins;
+import { GlobalPlayer } from '../util/sound';
 
 type EventCallback = () => any;
 
@@ -18,7 +12,6 @@ interface EventfulButtonProps {
 const EventfulButton: React.FC<EventfulButtonProps> = ({ onPress, onRelease, children }) => {
 
   const [isPressed, setIsPressed] = useState(false);
-  const { state, dispatch } = useContext(AppContext);
   const tone = useRef<any>(GlobalPlayer);
 
   function startOsc( ){

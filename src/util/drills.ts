@@ -21,8 +21,6 @@ const easyExercises = [
 ];
 
 const intermediateExercises = easyDrills.map((drill) => { return drill.split(" ").join('')});
-console.log(intermediateExercises);
-
 const expertExercises: string[] = [];
 let temp = expertDrills.map((drill) => { return drill.split(' ')});
 temp.forEach((each) => {
@@ -30,11 +28,6 @@ temp.forEach((each) => {
         expertExercises.push(drill);
     })
 })
-
-function shuffle(array: string[]) {
-    array.sort(() => Math.random() - 0.5);
-    return array;
-}
 
 function getDrill(difficulty: string){
     let drills = easyDrills;
