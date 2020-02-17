@@ -18,7 +18,6 @@ import './Menu.scss';
 interface MenuProps extends RouteComponentProps {
   appPages: AppPage[];
 }
-
 const Menu: React.FunctionComponent<MenuProps> = ({ appPages }) => (
   <IonMenu menuId="main" contentId="mainMenu" type="overlay" side="start">
     <IonHeader className="MenuHeader">
@@ -29,10 +28,12 @@ const Menu: React.FunctionComponent<MenuProps> = ({ appPages }) => (
     <IonContent className="MenuBody" onIonScroll={() => console.log('dragging main')}>
       <IonList>
         {appPages.map((appPage, index) => {
+          let icon = appPage.icon;
+          console.log('menu icon', icon);
           return (
             <IonMenuToggle key={index} autoHide={false}>
               <IonItem routerLink={appPage.url} className="menuItem" routerDirection="none">
-                <IonIcon slot="start" icon={appPage.icon} className="mainMenuIcon"/>
+                <IonIcon slot="start" icon={icon} className="mainMenuIcon"/>
                 <IonLabel>{appPage.title}</IonLabel>
               </IonItem>
             </IonMenuToggle>

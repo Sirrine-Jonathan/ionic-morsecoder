@@ -11,7 +11,7 @@ import Home from './pages/Home';
 import Practice from './pages/Practice';
 import Study from './pages/Study';
 import Train from './pages/Train';
-import { home, book, school, settings, fitness } from 'ionicons/icons';
+import { home, book, school, fitness } from 'ionicons/icons';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
