@@ -85,6 +85,7 @@ const HomePage: React.FC = () => {
       tone.current.stop();
     }
   }, [isPlayingBack]);
+
   
   return (
     <IonPage>

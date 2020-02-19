@@ -12,10 +12,6 @@ import Study from './pages/Study';
 import Train from './pages/Train';
 import { home, book, school, fitness } from 'ionicons/icons';
 
-/* AdMob stuff */
-import { Plugins } from '@capacitor/core';
-const { AdMob } = Plugins;
-
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
 
@@ -35,6 +31,11 @@ import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
 import { AppContextProvider } from './State';
+
+
+/* AdMob stuff */
+import { Plugins } from '@capacitor/core';
+const { AdMob } = Plugins;
 
 setupConfig({
   rippleEffect: false,
